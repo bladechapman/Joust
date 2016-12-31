@@ -21,7 +21,7 @@ def create_new_room():
 
 @app.route("/join_room/<uuid:room_id>", methods=["GET"])
 def join_existing_room(room_id):
-    return redirect("/game/{}".format(str(existing_room.id), code=302))
+    return redirect("/game/{}".format(str(room_id), code=302))
 
 @app.route("/game/<uuid:room_id>", methods=["GET"])
 def serve_room(room_id):
