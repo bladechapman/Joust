@@ -44,5 +44,9 @@ class Room():
         player.character = next(self._character_iter)
 
     @property
+    def players(self):
+        return self._players
+
+    @property
     def id(self):
         return self._id
