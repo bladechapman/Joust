@@ -42,7 +42,7 @@ class Player():
         if not isinstance(value, PlayerStatus):
             raise ValueError("Player status can only be set to member of \
 # PlayerStatus enum")
-        self._status = status
+        self._status = value
 
     @property
     def id(self):

@@ -14,6 +14,7 @@ class Room():
         self._status = RoomStatus.waiting
         self._players = {}
         self._character_iter = iter(Character)
+        self.session = None
 
     @property
     def status(self):
@@ -24,6 +25,7 @@ class Room():
         if not isinstance(value, RoomStatus):
             raise TypeError("Room status can only be set to member of \
 # RoomStatus enum")
+        self._status = value
 
     def add_new_player(self):
         if len(self._players) == 4:

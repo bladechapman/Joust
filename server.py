@@ -2,6 +2,8 @@ from flask import Flask, redirect, send_from_directory
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from game.room import Room
 from game.player import Player
+from game.session import Session
+from game.utils import build_game_update_payload
 from uuid import UUID
 import json
 
@@ -31,7 +33,18 @@ def serve_room(room_id):
 
 @app.route("/begin_session/<uuid:room_id>")
 def begin_session_for_room(room_id):
-    raise Exception("TODO")
+    room = active_rooms[room_id]
+    session = Session(room)
+    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
+    return json.dumps({"error": None})
+
+@app.route("/eliminate_player/<uuid:room_id>/<uuid:player_id>")
+def eliminate_player(room_id, player_id):
+    room = active_rooms[room_id]
+    session = room.session
+    session.eliminate_player_by_id(player_id)
+    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
+    return json.dumps({"error":None})
 
 @socketio.on("join")
 def on_join(data):
@@ -39,9 +52,9 @@ def on_join(data):
     room = active_rooms[UUID(room_id)]
     new_player = room.add_new_player()
     join_room(room_id)
-    emit("join_ack", {"player_id": str(new_player.id)})
     player_list = list(map(lambda x: str(x), room.players.keys()))
     emit("player_joined", {"players": player_list}, room=room_id)
+    emit("join_ack", {"player_id": str(new_player.id)})
 
 if __name__ == "__main__":
     socketio.run(app)
