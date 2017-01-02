@@ -57,4 +57,4 @@ def on_join(data):
     emit("join_ack", {"player_id": str(new_player.id)})
 
 if __name__ == "__main__":
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0")
