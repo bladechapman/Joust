@@ -13,6 +13,12 @@ class Session():
 
     def eliminate_player_by_id(self, uuid):
         self._room._players[uuid].status = PlayerStatus.eliminated
+        self._validate_session_status()
+
+    def tick(self):
+        self._validate_session_status()
+
+    def _validate_session_status(self):
         num_eliminated = sum(map(lambda x: x.status == PlayerStatus.eliminated, self._room.players.values()))
         if num_eliminated == len(self._room.players):
             self._room.status = RoomStatus.complete

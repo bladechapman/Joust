@@ -15,29 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("threshold").innerHTML = threshold;
 
   let socket = connect(room_id);
-  socket.on("player_joined", updatePlayerList);
+  // socket.on("player_joined", updatePlayerList);
   socket.on("game_update", gameUpdate);
   document.getElementById("start_game").addEventListener("click", () => {
     startGame(room_id);
-
-    function step() {
-      if (!stop_step) {
-        trackMotion({
-          acceleration: {
-            x: Math.random() * 50,
-            y: Math.random() * 50,
-            z: Math.random() * 50
-          }
-        });
-        window.requestAnimationFrame(step);
-      }
-    }
-    step();
+    window.addEventListener("devicemotion", trackMotion);
   });
   document.getElementById("eliminate_self").addEventListener("click", () => {
     eliminateSelf(room_id);
-  })
-  // window.addEventListener("devicemotion", trackMotion);
+  });
+  document.getElementById("leave_room").addEventListener("click", leaveRoom);
 });
 
 function connect(room_id) {
@@ -52,11 +39,11 @@ function connect(room_id) {
   return socket;
 }
 function updatePlayerList(data) {
-  console.log("player_joined", data);
-
   document.getElementById("players").innerHTML = "";
-  for (var i in data["players"]) {
-    document.getElementById("players").innerHTML += data["players"][i] + "<br>";
+  window._data = data;
+  for (var id in data["players_status_readable"]) {
+    document.getElementById("players").innerHTML += id + ": " + data["players_status_readable"][id] + "<br>";
+    // document.getElementById("players").innerHTML += data["players"][i] + "<br>";
   }
 }
 function startGame(room_id) {
@@ -66,8 +53,9 @@ function startGame(room_id) {
   startGameReq.send();
 }
 function gameUpdate(data) {
-  console.log(data);
+  console.log("game update", data);
   document.getElementById("status").innerHTML = data["room_status_readable"]
+  updatePlayerList(data);
 }
 function eliminateSelf(room_id) {
   console.log(player_id);
@@ -91,5 +79,17 @@ function trackMotion(event) {
     eliminateSelf(room_id);
     window.removeEventListener("devicemotion", trackMotion);
     stop_step = true;
+  }
+}
+function leaveRoom(event) {
+  let leaveRoomReq = new XMLHttpRequest();
+  leaveRoomReq.open("GET", "/leave_room/" + room_id + "/" + player_id);
+  leaveRoomReq.responseType = "json";
+  leaveRoomReq.send();
+  leaveRoomReq.onreadystatechange = () => {
+    if (leaveRoomReq.readyState === XMLHttpRequest.DONE) {
+      console.log("LEAVE ROOM RESPONSE");
+      document.location.href = "/";
+    }
   }
 }

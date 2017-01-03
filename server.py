@@ -25,6 +25,13 @@ def create_new_room():
 def join_existing_room(room_id):
     return redirect("/game/{}".format(str(room_id), code=302))
 
+@app.route("/leave_room/<uuid:room_id>/<uuid:player_id>", methods=["GET"])
+def leave_room(room_id, player_id):
+    room = active_rooms[room_id]
+    room.remove_player_by_id(player_id)
+    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
+    return json.dumps({"error": None})
+
 @app.route("/game/<uuid:room_id>", methods=["GET"])
 def serve_room(room_id):
     if room_id not in active_rooms:
@@ -53,8 +60,9 @@ def on_join(data):
     new_player = room.add_new_player()
     join_room(room_id)
     player_list = list(map(lambda x: str(x), room.players.keys()))
-    emit("player_joined", {"players": player_list}, room=room_id)
+    # emit("player_joined", {"players": player_list}, room=room_id)
+    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     emit("join_ack", {"player_id": str(new_player.id)})
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0")
+    socketio.run(app, host="0.0.0.0", port=4000)

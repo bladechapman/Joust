@@ -38,6 +38,8 @@ class Room():
         if uuid not in self._players:
             return False
         del self._players[uuid]
+        if self.session is not None:
+            self.session.tick()
         return True
 
     def select_character_for_player_id(self, uuid):
