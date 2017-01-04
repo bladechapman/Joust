@@ -15,8 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("threshold").innerHTML = threshold;
 
   let socket = connect(room_id);
-  // socket.on("player_joined", updatePlayerList);
   socket.on("game_update", gameUpdate);
+  socket.on("disconnect", () => {
+    console.log("disconnect");
+    document.location.href = "/";
+  });
   document.getElementById("start_game").addEventListener("click", () => {
     startGame(room_id);
     window.addEventListener("devicemotion", trackMotion);

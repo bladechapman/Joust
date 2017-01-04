@@ -27,10 +27,10 @@ class Room():
 # RoomStatus enum")
         self._status = value
 
-    def add_new_player(self):
+    def add_new_player(self, uuid):
         if len(self._players) == 4:
             raise IndexError("Room can only have a maximum of 4 players")
-        player = Player(self)
+        player = Player(self, uuid)
         self._players[player.id] = player
         return player
 

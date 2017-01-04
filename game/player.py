@@ -1,4 +1,3 @@
-from uuid import uuid4
 from enum import Enum
 from .character import Character
 
@@ -9,11 +8,11 @@ class PlayerStatus(Enum):
     eliminated = 3
 
 class Player():
-    def __init__(self, room):
+    def __init__(self, room, uuid):
         self._room = room
         self._character = None
         self._status = PlayerStatus.joined
-        self._id = uuid4()
+        self._id = uuid
 
     @property
     def room(self):
