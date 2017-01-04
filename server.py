@@ -30,6 +30,8 @@ def join_existing_room(room_id):
 def leave_room(room_id, player_id):
     room = active_rooms[room_id]
     room.remove_player_by_id(player_id)
+    if len(room.players == 0):
+        del active_rooms[room_id]
     del active_players[player_id]
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     return json.dumps({"error": None})
