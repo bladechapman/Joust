@@ -12,7 +12,14 @@ class GameObject():
         Meant to be implemented in subclasses. Used to coordinate and
         validate state with other objects
         """
-        raise Exception("Not validated yet")
+        raise Exception("Not implemented yet")
+
+    def serialize(self):
+        """
+        Meant to be implemented in subclass. Used to send information over
+        network as json
+        """
+        raise Exception("Not implemented yet")
 
     @property
     def id(self):

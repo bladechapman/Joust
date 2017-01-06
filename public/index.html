@@ -2,10 +2,16 @@
 <html>
   <head>
     <script src="./js/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/index.css">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no">
   </head>
   <body>
-    <a href="/new_room" id="new">Create new room</a>
-    <a href="javascript:joinRoom()">Join room</a>
-    <textarea id="room_id"></textarea>
+    <div id="flex">
+      <img id="header_image" src="/assets/fu.png" />
+      <a href="/new_room" id="new" class="button"></a>
+      <a href="javascript:joinRoom()" id="join" class="button"></a>
+      <textarea id="room_id"></textarea>
+    </div>
   </body>
 </html>

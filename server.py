@@ -12,21 +12,21 @@ socketio = SocketIO(app)
 active_rooms = {}
 active_players = {}
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def root():
     return send_from_directory("public", "index.html")
 
-@app.route("/new_room", methods=["GET"])
+@app.route("/new_room")
 def create_new_room():
     new_room = Room()
     active_rooms[new_room.id] = new_room
     return redirect("/game/{}".format(str(new_room.id), code=302))
 
-@app.route("/join_room/<uuid:room_id>", methods=["GET"])
+@app.route("/join_room/<uuid:room_id>")
 def join_existing_room(room_id):
     return redirect("/game/{}".format(str(room_id), code=302))
 
-@app.route("/leave_room/<uuid:room_id>/<uuid:player_id>", methods=["GET"])
+@app.route("/leave_room/<uuid:room_id>/<uuid:player_id>")
 def leave_room(room_id, player_id):
     room = active_rooms[room_id]
     room.remove_player_by_id(player_id)
@@ -38,7 +38,7 @@ def leave_room(room_id, player_id):
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     return json.dumps({"error": None})
 
-@app.route("/game/<uuid:room_id>", methods=["GET"])
+@app.route("/game/<uuid:room_id>")
 def serve_room(room_id):
     if room_id not in active_rooms:
         raise Exception("Room does not exist")
