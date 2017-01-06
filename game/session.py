@@ -19,14 +19,21 @@ class Session(GameObject):
 
     def eliminate_player_by_id(self, uuid):
         """
-        
+        Eliminates the player from the session
+        :param uuid: uuid of the player to eliminate
         """
         self._room._players[uuid].status = PlayerStatus.eliminated
         self.validate()
 
     def validate(self):
+        """
+        Validates the status of the session and the corresponding room.
+        If all players have been eliminated, this will update the status of
+        the room and each player involved
+        """
         num_eliminated = sum(map(lambda x: x.status == PlayerStatus.eliminated, self._room.players.values()))
         if num_eliminated == len(self._room.players):
             self._room.status = RoomStatus.complete
+            self._room.session = None
             for player_id in self._room.players:
                 self._room.players[player_id].status = PlayerStatus.waiting

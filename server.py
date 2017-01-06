@@ -33,6 +33,8 @@ def leave_room(room_id, player_id):
     if len(room.players == 0):
         del active_rooms[room_id]
     del active_players[player_id]
+    if room.session is not None:
+        room.session.validate()
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     return json.dumps({"error": None})
 
@@ -55,7 +57,7 @@ def eliminate_player(room_id, player_id):
     session = room.session
     session.eliminate_player_by_id(player_id)
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
-    return json.dumps({"error":None})
+    return json.dumps({"error": None})
 
 @socketio.on("join")
 def on_join(data):
@@ -65,7 +67,6 @@ def on_join(data):
     active_players[UUID(request.sid)] = new_player
     join_room(room_id)
     player_list = list(map(lambda x: str(x), room.players.keys()))
-    # emit("player_joined", {"players": player_list}, room=room_id)
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     emit("join_ack", {"player_id": str(new_player.id)})
 
