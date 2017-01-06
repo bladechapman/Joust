@@ -1,5 +1,6 @@
-from .player import Player
-from .character import Character
+from game.game_object import GameObject
+from game.player import Player
+from game.character import Character
 from enum import Enum
 from uuid import uuid4
 
@@ -8,49 +9,76 @@ class RoomStatus(Enum):
     playing = 1
     complete = 2
 
-class Room():
+class Room(GameObject):
     def __init__(self):
-        self._id = uuid4()
+        """
+        Initializes a new room object
+        """
+        super().__init__()
         self._status = RoomStatus.waiting
         self._players = {}
         self._character_iter = iter(Character)
         self.session = None
 
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, value):
-        if not isinstance(value, RoomStatus):
-            raise TypeError("Room status can only be set to member of \
-# RoomStatus enum")
-        self._status = value
-
-    def add_new_player(self, uuid):
+    def add_new_player(self, uuid=uuid4()):
+        """
+        Creates a new player with the given id and adds it to the room
+        :param uuid: Optional uuid that will be assigned to the player
+        :return: The player that has joined the room
+        """
         if len(self._players) == 4:
             raise IndexError("Room can only have a maximum of 4 players")
-        player = Player(self, uuid)
+        player = Player(self, id=uuid)
         self._players[player.id] = player
         return player
 
     def remove_player_by_id(self, uuid):
+        """
+        Removes a player from the room by uuid and updates the session if one
+        is active
+        :param uuid: the uuid of the player to be removed
+        :return: Boolean whether or not the player was successfully removed
+        """
         if uuid not in self._players:
             return False
         del self._players[uuid]
         if self.session is not None:
-            self.session.tick()
+            self.session.validate()
         return True
 
     def select_character_for_player_id(self, uuid):
+        """
+        Selects a character for a player by uuid. Use this to make sure
+        characters are consistent between rooms
+        :param uuid: uuid of player to be assigned character
+        """
         if uuid not in self._players:
             raise KeyError("Player not in room")
         player.character = next(self._character_iter)
 
     @property
-    def players(self):
-        return self._players
+    def status(self):
+        """
+        status property getter
+        :return: current room status
+        """
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        """
+        status property setter.
+        :param value: Value to set status to. Must be a member of the
+        RoomStatus enum
+        """
+        if not isinstance(value, RoomStatus):
+            raise TypeError("Room status can only be set to member of \
+                            # RoomStatus enum")
+        self._status = value
 
     @property
-    def id(self):
-        return self._id
+    def players(self):
+        """
+        players property is read only
+        """
+        return self._players
