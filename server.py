@@ -30,7 +30,7 @@ def join_existing_room(room_id):
 def leave_room(room_id, player_id):
     room = active_rooms[room_id]
     room.remove_player_by_id(player_id)
-    if len(room.players == 0):
+    if len(room.players) == 0:
         del active_rooms[room_id]
     del active_players[player_id]
     if room.session is not None:
