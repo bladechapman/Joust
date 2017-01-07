@@ -36,4 +36,4 @@ class Session(GameObject):
             self._room.status = RoomStatus.complete
             self._room.session = None
             for player_id in self._room.players:
-                self._room.players[player_id].status = PlayerStatus.waiting
+                self._room.players[player_id].status = PlayerStatus.ready

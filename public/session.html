@@ -3,9 +3,20 @@
   <head>
     <script src="/js/session.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/styles/session.css">
   </head>
   <body>
-    PLAYERS
+    <div id="flex">
+      <div id="other_players">
+        <div id="one" class="character"></div>
+        <div id="two" class="character"></div>
+        <div id="three" class="character"></div>
+      </div>
+      <div id="you">Press and hold to ready up. Keep holding while playing. Game starts when all players are ready</div>
+      <div id="leave_room">Leave room</div>
+    </div>
+
+    <!-- PLAYERS
     <div id="players"></div>
 
     STATUS
@@ -18,6 +29,6 @@
     LARGEST V
     <div id="c"></div>
     <div id="v"></div>
-    <div id="threshold"></div>
+    <div id="threshold"></div> -->
   </body>
 </html>

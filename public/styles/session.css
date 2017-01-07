@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#other_players {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  width: 100%;
+}
+
+.character {
+  width: calc(100% / 3);
+  height: 100%;
+}
+
+#one {
+  background-color: red;
+}
+
+#two {
+  background-color: green;
+}
+
+#three {
+  background-color: yellow;
+}
+
+#you {
+  background: blue;
+  height: calc(100vh - 250px);
+  width: 100%;
+}
+
+#leave_room {
+  height: 50px;
+  width: 100%;
+}

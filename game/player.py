@@ -2,10 +2,11 @@ from enum import Enum
 from .character import Character
 from game.game_object import GameObject
 from uuid import uuid4
+import json
 
 class PlayerStatus(Enum):
     joined = 0
-    waiting = 1
+    ready = 1
     playing = 2
     eliminated = 3
 
@@ -20,6 +21,14 @@ class Player(GameObject):
         self._room = room
         self._character = None
         self._status = PlayerStatus.joined
+
+    def serialize(self):
+        return {
+            "id": str(self.id),
+            "status_code": self.status.value,
+            "status_readable": self.status.name,
+            "character": None if self.character is None else self.character.value
+        }
 
     @property
     def room(self):
@@ -47,8 +56,7 @@ class Player(GameObject):
                                 # Character enum")
         if self._character is not None:
             raise Exception("Player's character is already set")
-        self._character = Character
-        self.status = PlayerStatus.waiting
+        self._character = value
 
     @property
     def status(self):

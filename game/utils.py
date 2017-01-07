@@ -4,5 +4,6 @@ def build_game_update_payload(room):
         "room_status": room.status.value,
         "room_status_readable": room.status.name,
         "players_status": {str(player_id):room.players[player_id].status.value for player_id in room.players},
-        "players_status_readable": {str(player_id):room.players[player_id].status.name for player_id in room.players}
+        "players_status_readable": {str(player_id):room.players[player_id].status.name for player_id in room.players},
+        "players": {str(player_id):room.players[player_id].serialize() for player_id in room.players}
     }

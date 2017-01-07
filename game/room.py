@@ -17,7 +17,7 @@ class Room(GameObject):
         super().__init__()
         self._status = RoomStatus.waiting
         self._players = {}
-        self._character_iter = iter(Character)
+        self._free_characters = set(list(Character))
         self.session = None
 
     def add_new_player(self, uuid=uuid4()):
@@ -30,6 +30,7 @@ class Room(GameObject):
             raise IndexError("Room can only have a maximum of 4 players")
         player = Player(self, id=uuid)
         self._players[player.id] = player
+        self.select_character_for_player_id(player.id)
         return player
 
     def remove_player_by_id(self, uuid):
@@ -41,6 +42,7 @@ class Room(GameObject):
         """
         if uuid not in self._players:
             return False
+        self._free_characters.add(self._players[uuid].character)
         del self._players[uuid]
         if self.session is not None:
             self.session.validate()
@@ -54,7 +56,7 @@ class Room(GameObject):
         """
         if uuid not in self._players:
             raise KeyError("Player not in room")
-        player.character = next(self._character_iter)
+        self.players[uuid].character = self._free_characters.pop()
 
     @property
     def status(self):
