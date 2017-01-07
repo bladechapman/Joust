@@ -4,8 +4,7 @@ let player_id;
 let largest_v = 0;
 let threshold = 5000;
 let room_id;
-
-let stop_step = false;
+let startTimer;
 
 document.addEventListener("DOMContentLoaded", () => {
   let re = /\/game\/([^\/]*)/;
@@ -14,19 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let socket = connect(room_id);
   socket.on("game_update", gameUpdate);
-  socket.on("disconnect", () => {
-    console.log("disconnect");
-    document.location.href = "/";
-  });
+  socket.on("disconnect", leaveRoom);
+  document.getElementById("leave_room").addEventListener("click", leaveRoom);
+
   document.getElementById("you").addEventListener("mousedown", () => {
-    console.log("READY");
-    socket.emit("ready", {"room_id": room_id});
+    startTimer = window.setTimeout(() => {
+      socket.emit("ready", {"room_id": room_id});
+    }, 1000);
   });
   document.getElementById("you").addEventListener("mouseup", () => {
-    console.log("UNREADY");
+    clearTimeout(startTimer);
     socket.emit("unready", {"room_id": room_id});
-  });
-  document.getElementById("leave_room").addEventListener("click", leaveRoom);
+  })
 });
 
 function connect(room_id) {
@@ -42,10 +40,7 @@ function connect(room_id) {
 function updatePlayerList(data) {
   let room = data["room"];
   let players = room["players"];
-
-  document.getElementById("you").innerHTML = "";
-  document.getElementById("you").innerHTML += players[player_id]["id"] + "<br>";
-  document.getElementById("you").innerHTML += players[player_id]["status_readable"];
+  let current_player = players[player_id];
 
   var slots = [
     document.getElementById("three"),
@@ -53,16 +48,30 @@ function updatePlayerList(data) {
     document.getElementById("one"),
   ];
 
+  var characters = [
+    "red",
+    "blue",
+    "yellow",
+    "green"
+  ]
+
+  // document.getElementById("you").innerHTML += current_player["id"] + "<br>";
+  // document.getElementById("you").innerHTML += current_player["status_readable"];
+  document.getElementById("you").className = characters[current_player["character"]]
+  document.getElementById("you").innerHTML = "<img class=\"char_img_main\" src=../assets/"+characters[current_player["character"]]+".png >";
+
   for (var i in slots) {
     slots[i].innerHTML = "";
+    slots[i].className = "character";
   }
 
   for (var id in players) {
     if (id != player_id) {
       let slot = slots.pop();
-      slot.innerHTML = "";
-      slot.innerHTML += "id: " + id + "<br>";
-      slot.innerHTML += "status: " + players[id]["status_readable"];
+      slot.innerHTML = "<img class=\"char_img\" src=../assets/"+characters[players[id]["character"]]+".png>";
+      // slot.innerHTML += "id: " + id + "<br>";
+      // slot.innerHTML += "status: " + players[id]["status_readable"];
+      slot.className = "character " + characters[players[id]["character"]];
     }
   }
 }
@@ -86,10 +95,8 @@ function trackMotion(event) {
     // document.getElementById("v").innerHTML = largest_v;
   }
   if (v > threshold) {
-    console.log("ELIMINATED");
     eliminateSelf(room_id);
     window.removeEventListener("devicemotion", trackMotion);
-    stop_step = true;
   }
 }
 function leaveRoom(event) {
