@@ -1,8 +1,10 @@
+import collections
 from game.game_object import GameObject
 from game.player import Player
 from game.character import Character
 from enum import Enum
 from uuid import uuid4
+from game.utils import UUIDCollection
 
 class RoomStatus(Enum):
     waiting = 0
@@ -16,7 +18,7 @@ class Room(GameObject):
         """
         super().__init__()
         self._status = RoomStatus.waiting
-        self._players = {}
+        self._players = UUIDCollection()
         self._free_characters = set(list(Character))
         self.session = None
 
@@ -57,6 +59,14 @@ class Room(GameObject):
         if uuid not in self._players:
             raise KeyError("Player not in room")
         self.players[uuid].character = self._free_characters.pop()
+
+    def serialize(self):
+        return {
+            "id": self.id.hex,
+            "players": self.players.serialize(),
+            "status_code": self.status.value,
+            "status_readable": self.status.name
+        }
 
     @property
     def status(self):

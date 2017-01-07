@@ -24,7 +24,7 @@ class Player(GameObject):
 
     def serialize(self):
         return {
-            "id": str(self.id),
+            "id": self.id.hex,
             "status_code": self.status.value,
             "status_readable": self.status.name,
             "character": None if self.character is None else self.character.value

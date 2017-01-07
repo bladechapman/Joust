@@ -19,7 +19,9 @@ class GameObject():
         Meant to be implemented in subclass. Used to send information over
         network as json
         """
-        raise Exception("Not implemented yet")
+        return {
+            "id": str(self.id)
+        }
 
     @property
     def id(self):

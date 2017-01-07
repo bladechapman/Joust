@@ -11,8 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let re = /\/game\/([^\/]*)/;
   let _;
   [_, room_id] = re.exec(window.location.href);
-  // document.getElementById("v").innerHTML = largest_v;
-  // document.getElementById("threshold").innerHTML = threshold;
 
   let socket = connect(room_id);
   socket.on("game_update", gameUpdate);
@@ -27,55 +25,49 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("you").addEventListener("mouseup", () => {
     console.log("UNREADY");
     socket.emit("unready", {"room_id": room_id});
-  })
-  // document.getElementById("start_game").addEventListener("click", () => {
-  //   startGame(room_id);
-  //   window.addEventListener("devicemotion", trackMotion);
-  // });
-  // document.getElementById("eliminate_self").addEventListener("click", () => {
-  //   eliminateSelf(room_id);
-  // });
+  });
   document.getElementById("leave_room").addEventListener("click", leaveRoom);
 });
 
 function connect(room_id) {
   let socket = io.connect('http://' + document.domain + ':' + location.port);
+  window._socket = socket;
   socket.on('connect', () => {
     console.log("connect");
     socket.emit('join', {"room_id": room_id});
-  });
-  socket.on('join_ack', (data) => {
-    player_id = data["player_id"]
-    // document.getElementById("you").innerHTML += "<br>" + player_id
+    player_id = socket.id;
   });
   return socket;
 }
 function updatePlayerList(data) {
-  // document.getElementById("players").innerHTML = "";
-  // for (var id in data["players_status_readable"]) {
-    // document.getElementById("players").innerHTML += id + ": " + data["players_status_readable"][id] + "<br>";
-  // }
+  let room = data["room"];
+  let players = room["players"];
+
+  document.getElementById("you").innerHTML = "";
+  document.getElementById("you").innerHTML += players[player_id]["id"] + "<br>";
+  document.getElementById("you").innerHTML += players[player_id]["status_readable"];
+
   var slots = [
-    document.getElementById("one"),
-    document.getElementById("two"),
     document.getElementById("three"),
-    document.getElementById("you")
+    document.getElementById("two"),
+    document.getElementById("one"),
   ];
+
   for (var i in slots) {
     slots[i].innerHTML = "";
   }
 
-  for (var i = 0, l = Object.keys(data["players"]).length; i < l; i++) {
-    var player_id = Object.keys(data["players"])[i];
-    var elem = slots[i];
-    elem.innerHTML = "";
-    elem.innerHTML += "id: " + data["players"][player_id]["id"] + "<br>";
-    elem.innerHTML += "status: " + data["players"][player_id]["status_readable"];
+  for (var id in players) {
+    if (id != player_id) {
+      let slot = slots.pop();
+      slot.innerHTML = "";
+      slot.innerHTML += "id: " + id + "<br>";
+      slot.innerHTML += "status: " + players[id]["status_readable"];
+    }
   }
 }
 function gameUpdate(data) {
   console.log("game update", data);
-  // document.getElementById("status").innerHTML = data["room_status_readable"]
   updatePlayerList(data);
 }
 function eliminateSelf(room_id) {
@@ -95,21 +87,11 @@ function trackMotion(event) {
   }
   if (v > threshold) {
     console.log("ELIMINATED");
-    // document.body.innerHTML += "ELIMINATED";
     eliminateSelf(room_id);
     window.removeEventListener("devicemotion", trackMotion);
     stop_step = true;
   }
 }
 function leaveRoom(event) {
-  // let leaveRoomReq = new XMLHttpRequest();
-  // leaveRoomReq.open("GET", "/leave_room/" + room_id + "/" + player_id);
-  // leaveRoomReq.responseType = "json";
-  // leaveRoomReq.send();
-  // leaveRoomReq.onreadystatechange = () => {
-  //   if (leaveRoomReq.readyState === XMLHttpRequest.DONE) {
-  //     console.log("LEAVE ROOM RESPONSE");
   document.location.href = "/";
-  //   }
-  // }
 }

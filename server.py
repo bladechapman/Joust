@@ -26,19 +26,21 @@ def create_new_room():
 def join_existing_room(room_id):
     return redirect("/game/{}".format(str(room_id), code=302))
 
-# @app.route("/leave_room/<uuid:room_id>/<uuid:player_id>")
 def leave_room(room_id, player_id):
     room = active_rooms[room_id]
     room.remove_player_by_id(player_id)
+
     if len(room.players) == 0:
         del active_rooms[room_id]
     del active_players[player_id]
+
     if room.session is not None:
         room.session.validate()
-    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
+
     print(active_rooms)
     print(active_players)
-    print("---")
+
+    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     return json.dumps({"error": None})
 
 @app.route("/game/<uuid:room_id>")
@@ -46,13 +48,6 @@ def serve_room(room_id):
     if room_id not in active_rooms:
         raise Exception("Room does not exist")
     return send_from_directory("public", "session.html")
-
-# @app.route("/begin_session/<uuid:room_id>")
-# def begin_session_for_room(room_id):
-#     room = active_rooms[room_id]
-#     session = Session(room)
-#     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
-#     return json.dumps({"error": None})
 
 @app.route("/eliminate_player/<uuid:room_id>/<uuid:player_id>")
 def eliminate_player(room_id, player_id):
@@ -64,7 +59,6 @@ def eliminate_player(room_id, player_id):
 
 @socketio.on("join")
 def on_join(data):
-    print(request.sid)
     room_id = data["room_id"]
     if UUID(room_id) not in active_rooms:
         raise Exception("Room does not exist")
@@ -74,7 +68,6 @@ def on_join(data):
     join_room(room_id)
     player_list = list(map(lambda x: str(x), room.players.keys()))
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
-    emit("join_ack", {"player_id": str(new_player.id)})
 
 @socketio.on("disconnect")
 def on_disconnect():
