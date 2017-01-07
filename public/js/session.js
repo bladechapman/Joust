@@ -46,14 +46,31 @@ function connect(room_id) {
   });
   socket.on('join_ack', (data) => {
     player_id = data["player_id"]
+    // document.getElementById("you").innerHTML += "<br>" + player_id
   });
   return socket;
 }
 function updatePlayerList(data) {
   // document.getElementById("players").innerHTML = "";
-  window._data = data;
-  for (var id in data["players_status_readable"]) {
+  // for (var id in data["players_status_readable"]) {
     // document.getElementById("players").innerHTML += id + ": " + data["players_status_readable"][id] + "<br>";
+  // }
+  var slots = [
+    document.getElementById("one"),
+    document.getElementById("two"),
+    document.getElementById("three"),
+    document.getElementById("you")
+  ];
+  for (var i in slots) {
+    slots[i].innerHTML = "";
+  }
+
+  for (var i = 0, l = Object.keys(data["players"]).length; i < l; i++) {
+    var player_id = Object.keys(data["players"])[i];
+    var elem = slots[i];
+    elem.innerHTML = "";
+    elem.innerHTML += "id: " + data["players"][player_id]["id"] + "<br>";
+    elem.innerHTML += "status: " + data["players"][player_id]["status_readable"];
   }
 }
 function gameUpdate(data) {
