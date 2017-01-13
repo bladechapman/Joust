@@ -23,14 +23,17 @@ class Session(GameObject):
             self._room.players[player_id].status = PlayerStatus.playing
         self._room.session = self
         self._status = SessionStatusEnum.slow
+        self._change_speed()
 
-    @delay_random()
-    def change_speed(self):
-        print("CHANGE SPEED: ", self.status)
+    @delay_random(lower=5, upper=15)
+    def _change_speed(self):
+        if (self._room.session is None):
+            return
         if self.status == SessionStatusEnum.slow:
             self._status = SessionStatusEnum.fast
         else:
             self._status = SessionStatusEnum.slow
+        self._change_speed()
 
     def eliminate_player_by_id(self, uuid):
         """
@@ -49,9 +52,9 @@ class Session(GameObject):
         num_eliminated = sum(map(lambda x: x.status == PlayerStatus.eliminated, self._room.players.values()))
         if num_eliminated == len(self._room.players):
             self._room.status = RoomStatus.complete
-            self._room.session = None
             for player_id in self._room.players:
                 self._room.players[player_id].status = PlayerStatus.joined
+            self._room.session = None
 
     def serialize(self):
         """
