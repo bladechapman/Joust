@@ -168,7 +168,7 @@ function trackMotion(event) {
   }
 }
 function leaveRoom(event) {
-  // document.location.href = "/";
+  document.location.href = "/";
 }
 function async(numCalls, callback) {
   let numCalled = 0;

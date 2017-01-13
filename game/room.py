@@ -65,8 +65,8 @@ class Room(GameObject):
             "id": self.id.hex,
             "players": self.players.serialize(),
             "status_code": self.status.value,
-            "status_readable": self.status.name,
-            "session": None if self.session is None else self.session.serialize()
+            "status_readable": self.status.name
+            # "session": None if self.session is None else self.session.serialize()
         }
 
     @property
