@@ -1,6 +1,12 @@
 from game.room import RoomStatus
 from game.player import PlayerStatus
 from game.game_object import GameObject
+from game.utils import delay_random
+from enum import Enum
+
+class SessionStatusEnum(Enum):
+    slow = 0
+    fast = 1
 
 class Session(GameObject):
     def __init__(self, room):
@@ -16,6 +22,15 @@ class Session(GameObject):
         for player_id in self._room.players:
             self._room.players[player_id].status = PlayerStatus.playing
         self._room.session = self
+        self._status = SessionStatusEnum.slow
+
+    @delay_random()
+    def change_speed(self):
+        print("CHANGE SPEED: ", self.status)
+        if self.status == SessionStatusEnum.slow:
+            self._status = SessionStatusEnum.fast
+        else:
+            self._status = SessionStatusEnum.slow
 
     def eliminate_player_by_id(self, uuid):
         """
@@ -37,3 +52,20 @@ class Session(GameObject):
             self._room.session = None
             for player_id in self._room.players:
                 self._room.players[player_id].status = PlayerStatus.joined
+
+    def serialize(self):
+        """
+        Serializes the current session
+        :return: A JSON serializable json object
+        """
+        return {
+            "status_readable": self.status.name,
+            "status_code": self.status.value
+        }
+
+    @property
+    def status(self):
+        """
+        Session status is read only
+        """
+        return self._status

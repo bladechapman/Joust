@@ -5,6 +5,11 @@ let largest_v = 0;
 let threshold = 5000;
 let room_id;
 let startTimer;
+let updateObject;
+let averageTripTime;
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var audioData;
+var currentAudioSource;
 
 document.addEventListener("DOMContentLoaded", () => {
   let re = /\/game\/([^\/]*)/;
@@ -15,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   socket.on("game_update", gameUpdate);
   socket.on("disconnect", leaveRoom);
   document.getElementById("leave_room").addEventListener("click", leaveRoom);
+  document.getElementById("leave_room").addEventListener("touchend", leaveRoom)
 
   document.getElementById("you").addEventListener("mousedown", () => {
     startTimer = window.setTimeout(() => {
@@ -24,9 +30,53 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("you").addEventListener("mouseup", () => {
     clearTimeout(startTimer);
     socket.emit("unready", {"room_id": room_id});
+  });
+
+  document.getElementById("you").addEventListener("touchstart", () => {
+    startTimer = window.setTimeout(() => {
+      socket.emit("ready", {"room_id": room_id});
+    }, 1000);
+  });
+  document.getElementById("you").addEventListener("touchend", () => {
+    clearTimeout(startTimer);
+    socket.emit("unready", {"room_id": room_id});
   })
 });
+retrieveMusic();
 
+function retrieveMusic() {
+  let musicRequest = new XMLHttpRequest();
+  musicRequest.open("GET", "/assets/test.mp3");
+  musicRequest.responseType = "arraybuffer";
+  musicRequest.send();
+
+  musicRequest.onreadystatechange = () => {
+    if (musicRequest.readyState === XMLHttpRequest.DONE) {
+      console.log("MUSIC DOWNLOADED");
+      audioData = musicRequest.response;
+    }
+  }
+}
+function initiateNtpSynchronize(socket) {
+  console.log("INITIATE");
+  socket.emit("synchronize");
+  let tripTimes = [];
+  let asyncIncrement = async(10, () => {
+    averageTripTime = tripTimes.reduce((a, b) => a + b, 0) / 10;
+    socket.off("synchronize_ack");
+    console.log("SYNC COMPLETE", averageTripTime);
+  });
+  socket.on("synchronize_ack", (data) => {
+    let server_timestamp = data["timestamp"]
+    let client_timestamp = getTimestampMilliseconds();
+    let tripTime = client_timestamp - server_timestamp;
+    tripTimes.push(tripTime);
+    asyncIncrement();
+  });
+}
+function getTimestampMilliseconds() {
+  return parseInt(Date.now());
+}
 function connect(room_id) {
   let socket = io.connect('http://' + document.domain + ':' + location.port);
   window._socket = socket;
@@ -34,6 +84,7 @@ function connect(room_id) {
     console.log("connect");
     socket.emit('join', {"room_id": room_id});
     player_id = socket.id;
+    initiateNtpSynchronize(socket);
   });
   return socket;
 }
@@ -55,10 +106,9 @@ function updatePlayerList(data) {
     "green"
   ]
 
-  // document.getElementById("you").innerHTML += current_player["id"] + "<br>";
-  // document.getElementById("you").innerHTML += current_player["status_readable"];
   document.getElementById("you").className = characters[current_player["character"]]
-  document.getElementById("you").innerHTML = "<img class=\"char_img_main\" src=../assets/"+characters[current_player["character"]]+".png >";
+  // document.getElementById("you").innerHTML = "<img class=\"char_img_main\" src=../assets/"+characters[current_player["character"]]+".png >";
+  document.getElementById("you").innerHTML = "<img class=\"char_img_status\" src=../assets/"+current_player["status_readable"]+".png>"
 
   for (var i in slots) {
     slots[i].innerHTML = "";
@@ -68,16 +118,34 @@ function updatePlayerList(data) {
   for (var id in players) {
     if (id != player_id) {
       let slot = slots.pop();
-      slot.innerHTML = "<img class=\"char_img\" src=../assets/"+characters[players[id]["character"]]+".png>";
-      // slot.innerHTML += "id: " + id + "<br>";
-      // slot.innerHTML += "status: " + players[id]["status_readable"];
       slot.className = "character " + characters[players[id]["character"]];
+      // slot.innerHTML = "<img class=\"char_img\" src=../assets/"+characters[players[id]["character"]]+".png>";
+      slot.innerHTML = "<img class=\"char_img_status\" src=../assets/"+players[id]["status_readable"]+".png>"
     }
   }
 }
 function gameUpdate(data) {
-  console.log("game update", data);
+  console.log(data)
+  updateObject = data;
   updatePlayerList(data);
+
+  if (data["room"]["status_code"] === 1 &&
+    data["room"]["players"][player_id]["status_code"] === 2 &&
+    currentAudioSource === undefined) {
+    audioCtx.decodeAudioData(audioData, (buffer) => {
+      console.log("START");
+      let source = audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioCtx.destination);
+      currentAudioSource = source;
+      currentAudioSource.start(0, averageTripTime / 1000);
+    });
+  } else if (currentAudioSource !== undefined &&
+    data["room"]["players"][player_id]["status_code"] !== 2) {
+    console.log("STOP");
+    currentAudioSource.stop();
+    currentAudioSource = undefined;
+  }
 }
 function eliminateSelf(room_id) {
   let eliminateSelfReq = new XMLHttpRequest();
@@ -100,5 +168,14 @@ function trackMotion(event) {
   }
 }
 function leaveRoom(event) {
-  document.location.href = "/";
+  // document.location.href = "/";
+}
+function async(numCalls, callback) {
+  let numCalled = 0;
+  return () => {
+    numCalled += 1;
+    if (numCalled == numCalls) {
+      callback();
+    }
+  }
 }

@@ -16,7 +16,7 @@ class Room(GameObject):
         """
         Initializes a new room object
         """
-        super().__init__()
+        super().__init__(id=uuid4())
         self._status = RoomStatus.waiting
         self._players = UUIDCollection()
         self._free_characters = set(list(Character))
@@ -65,7 +65,8 @@ class Room(GameObject):
             "id": self.id.hex,
             "players": self.players.serialize(),
             "status_code": self.status.value,
-            "status_readable": self.status.name
+            "status_readable": self.status.name,
+            "session": None if self.session is None else self.session.serialize()
         }
 
     @property

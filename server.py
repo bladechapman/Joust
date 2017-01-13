@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, join_room, leave_room, emit
 from game.room import Room
 from game.player import Player, PlayerStatus
 from game.session import Session
-from game.utils import build_game_update_payload
+from game.utils import build_game_update_payload, build_timestamp_payload
 from uuid import UUID
 import json
 
@@ -25,23 +25,6 @@ def create_new_room():
 @app.route("/join_room/<uuid:room_id>")
 def join_existing_room(room_id):
     return redirect("/game/{}".format(str(room_id), code=302))
-
-def leave_room(room_id, player_id):
-    room = active_rooms[room_id]
-    room.remove_player_by_id(player_id)
-
-    if len(room.players) == 0:
-        del active_rooms[room_id]
-    del active_players[player_id]
-
-    if room.session is not None:
-        room.session.validate()
-
-    print(active_rooms)
-    print(active_players)
-
-    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
-    return json.dumps({"error": None})
 
 @app.route("/game/<uuid:room_id>")
 def serve_room(room_id):
@@ -98,6 +81,29 @@ def on_unready(data):
         player.status = PlayerStatus.joined
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
 
+@socketio.on("synchronize")
+def on_synchronize():
+    print("SYN")
+    num_cycles = 10
+    for i in range(num_cycles):
+        emit("synchronize_ack", build_timestamp_payload())
+
+def leave_room(room_id, player_id):
+    room = active_rooms[room_id]
+    room.remove_player_by_id(player_id)
+
+    if len(room.players) == 0:
+        del active_rooms[room_id]
+    del active_players[player_id]
+
+    if room.session is not None:
+        room.session.validate()
+
+    print(active_rooms)
+    print(active_players)
+
+    socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
+    return json.dumps({"error": None})
 
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=4000)

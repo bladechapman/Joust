@@ -1,11 +1,45 @@
-from uuid import UUID
+import threading
 import collections
 from game.game_object import GameObject
+import time
+from random import random
+from uuid import UUID
+from functools import wraps
 
 def build_game_update_payload(room):
     return {
-        "room": room.serialize()
+        "room": room.serialize(),
+        "timestamp": get_timestamp_milliseconds()
     }
+
+def build_timestamp_payload():
+    """
+    For use in ntp syncing
+    """
+    return {
+        "timestamp": get_timestamp_milliseconds()
+    }
+
+def get_timestamp_milliseconds():
+    """
+    :return: The number of milliseconds since Unix epoch
+    """
+    return int(time.time() * 1000)
+
+def delay_random(lower=1.0, upper=3.0):
+    """
+    Decorator delaying the execution of a function
+    http://fredericiana.com/2014/11/14/settimeout-python-delay/
+    :param delay: the number of seconds to delay the function execution
+    """
+    def wrap(f):
+        @wraps(f)
+        def delayed(*args, **kwargs):
+            delay = int(random() * upper + lower)
+            timer = threading.Timer(delay, f, args=args, kwargs=kwargs)
+            timer.start()
+        return delayed
+    return wrap
 
 class UUIDCollection(collections.MutableMapping):
     """
