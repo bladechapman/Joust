@@ -10,7 +10,6 @@ from uuid import UUID
 import json
 
 app = Flask(__name__, static_folder="public", static_path="")
-# socketio = SocketIO(app, async_mode="threading")
 socketio = SocketIO(app)
 active_rooms = {}
 active_players = {}
@@ -47,7 +46,6 @@ def eliminate_player(room_id, player_id):
 @socketio.on("join")
 def on_join(data):
     room_id = data["room_id"]
-    print(room_id)
     if UUID(room_id) not in active_rooms:
         raise Exception("Room does not exist")
     room = active_rooms[UUID(room_id)]
@@ -88,7 +86,6 @@ def on_unready(data):
 
 @socketio.on("synchronize")
 def on_synchronize():
-    print("SYN")
     num_cycles = 10
     for i in range(num_cycles):
         emit("synchronize_ack", build_timestamp_payload())
@@ -103,9 +100,6 @@ def leave_room(room_id, player_id):
 
     if room.session is not None:
         room.session.validate()
-
-    print(active_rooms)
-    print(active_players)
 
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     return json.dumps({"error": None})

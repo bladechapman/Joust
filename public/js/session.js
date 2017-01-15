@@ -8,7 +8,8 @@ let startTimer;
 let updateObject;
 let averageTripTime;
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var audioData;
+var audioDataSlow;
+var audioDataFast;
 var currentAudioSource;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -52,8 +53,20 @@ function retrieveMusic() {
 
   musicRequest.onreadystatechange = () => {
     if (musicRequest.readyState === XMLHttpRequest.DONE) {
-      console.log("MUSIC DOWNLOADED");
-      audioData = musicRequest.response;
+      console.log("SLOW MUSIC DOWNLOADED");
+      audioDataSlow = musicRequest.response;
+    }
+  }
+
+  let fastMusicRequest = new XMLHttpRequest();
+  fastMusicRequest.open("GET", "/assets/fast.mp3");
+  fastMusicRequest.responseType = "arraybuffer";
+  fastMusicRequest.send();
+
+  fastMusicRequest.onreadystatechange = () => {
+    if (fastMusicRequest.readyState === XMLHttpRequest.DONE) {
+      console.log("FAST MUSIC DOWNLOADED");
+      audioDataFast = fastMusicRequest.response;
     }
   }
 }
@@ -126,25 +139,54 @@ function updatePlayerList(data) {
 }
 function gameUpdate(data) {
   console.log(data)
-  updateObject = data;
   updatePlayerList(data);
-
+  updateMusic(data);
+  updateObject = data;
+}
+function updateMusic(data) {
   if (data["room"]["status_code"] === 1 &&
     data["room"]["players"][player_id]["status_code"] === 2 &&
-    currentAudioSource === undefined) {
-    audioCtx.decodeAudioData(audioData, (buffer) => {
+    data["room"]["session"]["status_readable"] == "slow" &&
+    (updateObject == undefined || updateObject["room"]["session"] === null || updateObject["room"]["session"]["status_readable"] !== "slow")) {
+      if (currentAudioSource !== undefined) {
+        currentAudioSource.stop();
+      }
+    audioCtx.decodeAudioData(audioDataSlow, (buffer) => {
       console.log("START");
       let source = audioCtx.createBufferSource();
       source.buffer = buffer;
       source.connect(audioCtx.destination);
       currentAudioSource = source;
       currentAudioSource.start(0, averageTripTime / 1000);
-    });
-  } else if (currentAudioSource !== undefined &&
+    })
+  }
+  else if (data["room"]["status_code"] === 1 &&
+      data["room"]["players"][player_id]["status_code"] === 2 &&
+      data["room"]["session"]["status_readable"] == "fast" &&
+      (updateObject == undefined || updateObject["room"]["session"] === null || updateObject["room"]["session"]["status_readable"] !== "fast")) {
+        console.log("FAST")
+        if (currentAudioSource !== undefined) {
+          currentAudioSource.stop();
+        }
+        audioCtx.decodeAudioData(audioDataFast, (buffer) => {
+          console.log("START");
+          let source = audioCtx.createBufferSource();
+          source.buffer = buffer;
+          source.connect(audioCtx.destination);
+          currentAudioSource = source;
+          currentAudioSource.start(0, averageTripTime / 1000);
+        });
+  }
+  else if (currentAudioSource !== undefined &&
     data["room"]["players"][player_id]["status_code"] !== 2) {
     console.log("STOP");
     currentAudioSource.stop();
     currentAudioSource = undefined;
+  }
+  else {
+    if (currentAudioSource !== undefined) {
+      currentAudioSource.stop();
+    }
   }
 }
 function eliminateSelf(room_id) {

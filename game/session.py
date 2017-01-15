@@ -26,7 +26,7 @@ class Session(GameObject):
         self._status = SessionStatusEnum.slow
         self.change_speed()
 
-    @delay_random()
+    @delay_random(lower=15, upper=40)
     def change_speed(self):
         """
         Adjusts the speed of the session after some random amount of time
@@ -34,13 +34,12 @@ class Session(GameObject):
         if (self._room is None):
             return
 
-        print("CHANGE SPEED: ", self.status)
         if self.status == SessionStatusEnum.slow:
             self._status = SessionStatusEnum.fast
         else:
             self._status = SessionStatusEnum.slow
 
-        # TODO: Kill with fire, note that this seems to break w/ eventlet due to a bug w/ emitting from background threads
+        # TODO: Kill with fire, note that std threading libraries must be monkey patched with relevant networking library (eventlet)
         # https://github.com/miguelgrinberg/Flask-SocketIO/issues/192
         self._room.socket.emit("game_update", build_game_update_payload(self._room), room=str(self._room.id))
         self.change_speed()
