@@ -1,8 +1,9 @@
 from game.room import RoomStatus
 from game.player import PlayerStatus
 from game.game_object import GameObject
-from game.utils import delay_random
+from game.utils import delay_random, build_game_update_payload
 from enum import Enum
+import gc
 
 class SessionStatusEnum(Enum):
     slow = 0
@@ -23,14 +24,26 @@ class Session(GameObject):
             self._room.players[player_id].status = PlayerStatus.playing
         self._room.session = self
         self._status = SessionStatusEnum.slow
+        self.change_speed()
 
     @delay_random()
     def change_speed(self):
+        """
+        Adjusts the speed of the session after some random amount of time
+        """
+        if (self._room is None):
+            return
+
         print("CHANGE SPEED: ", self.status)
         if self.status == SessionStatusEnum.slow:
             self._status = SessionStatusEnum.fast
         else:
             self._status = SessionStatusEnum.slow
+
+        # TODO: Kill with fire, note that this seems to break w/ eventlet due to a bug w/ emitting from background threads
+        # https://github.com/miguelgrinberg/Flask-SocketIO/issues/192
+        self._room.socket.emit("game_update", build_game_update_payload(self._room), room=str(self._room.id))
+        self.change_speed()
 
     def eliminate_player_by_id(self, uuid):
         """
@@ -48,10 +61,11 @@ class Session(GameObject):
         """
         num_eliminated = sum(map(lambda x: x.status == PlayerStatus.eliminated, self._room.players.values()))
         if num_eliminated == len(self._room.players):
-            self._room.status = RoomStatus.complete
-            self._room.session = None
             for player_id in self._room.players:
                 self._room.players[player_id].status = PlayerStatus.joined
+            self._room.status = RoomStatus.complete
+            self._room.session = None
+            self._room = None
 
     def serialize(self):
         """

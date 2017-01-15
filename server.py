@@ -1,3 +1,5 @@
+import eventlet
+eventlet.monkey_patch()
 from flask import Flask, redirect, send_from_directory, request
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from game.room import Room
@@ -8,6 +10,7 @@ from uuid import UUID
 import json
 
 app = Flask(__name__, static_folder="public", static_path="")
+# socketio = SocketIO(app, async_mode="threading")
 socketio = SocketIO(app)
 active_rooms = {}
 active_players = {}
@@ -19,6 +22,7 @@ def root():
 @app.route("/new_room")
 def create_new_room():
     new_room = Room()
+    new_room.socket = socketio  # TODO: Kill with fire
     active_rooms[new_room.id] = new_room
     return redirect("/game/{}".format(str(new_room.id), code=302))
 
@@ -43,6 +47,7 @@ def eliminate_player(room_id, player_id):
 @socketio.on("join")
 def on_join(data):
     room_id = data["room_id"]
+    print(room_id)
     if UUID(room_id) not in active_rooms:
         raise Exception("Room does not exist")
     room = active_rooms[UUID(room_id)]
