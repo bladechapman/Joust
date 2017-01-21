@@ -1,5 +1,5 @@
-import threading
 import collections
+import threading
 from game.game_object import GameObject
 import time
 from random import random

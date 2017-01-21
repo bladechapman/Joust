@@ -13,6 +13,7 @@ var audioDataFast;
 var currentAudioSource;
 
 document.addEventListener("DOMContentLoaded", () => {
+
   let re = /\/game\/([^\/]*)/;
   let _;
   [_, room_id] = re.exec(window.location.href);
@@ -24,6 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("leave_room").addEventListener("touchend", leaveRoom)
 
   document.getElementById("you").addEventListener("mousedown", () => {
+    console.log("PRESS");
+    var oscillator = audioCtx.createOscillator();
+    oscillator.connect(audioCtx.destination);
+    oscillator.start(0);
+    oscillator.stop(audioCtx.currentTime + 1);
+
     startTimer = window.setTimeout(() => {
       socket.emit("ready", {"room_id": room_id});
     }, 1000);
@@ -141,7 +148,11 @@ function gameUpdate(data) {
   console.log(data)
   updatePlayerList(data);
   updateMusic(data);
+  updateTracking(data);
   updateObject = data;
+}
+function updateTracking(data) {
+  
 }
 function updateMusic(data) {
   if (data["room"]["status_code"] === 1 &&
