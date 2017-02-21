@@ -9,6 +9,8 @@ from game.utils import build_game_update_payload, build_timestamp_payload
 from uuid import UUID
 import json
 
+# TODO: Clean this up
+
 app = Flask(__name__, static_folder="public", static_path="")
 socketio = SocketIO(app)
 active_rooms = {}
