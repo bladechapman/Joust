@@ -26,7 +26,7 @@ class Session(GameObject):
         self._status = SessionStatusEnum.slow
         self.change_speed()
 
-    @delay_random(lower=15, upper=40)
+    @delay_random(lower=3, upper=5)
     def change_speed(self):
         """
         Adjusts the speed of the session after some random amount of time
