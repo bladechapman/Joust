@@ -123,7 +123,8 @@ window.setup = {
     fastMusicRequest.responseType = "arraybuffer";
     meta.music = {
       fast: [],
-      slow: []
+      slow: [],
+      status: "stopped"
     };
     meta.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     meta.audioSource = null;

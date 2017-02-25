@@ -100,17 +100,21 @@ function updateTracking(data) {
 function playMusic(type) {
   let audioData = (type === "slow") ? window.meta.music.slow[0] : window.meta.music.fast[0];
   let audioCtx = window.meta.audioCtx;
+  window.meta.music.status = "loading";
   audioCtx.decodeAudioData(audioData, (buffer) => {
-    let source = audioCtx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(audioCtx.destination);
-    window.meta.audioSource = source;
-    source.start(0, window.meta.averageTripTime / 1000);
+    if (window.meta.music.status != "stopped") {
+      let source = audioCtx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioCtx.destination);
+      window.meta.audioSource = source;
+      source.start(0, window.meta.averageTripTime / 1000);
+    }
   });
 }
 
 function stopMusic() {
   let audioSource = window.meta.audioSource;
+  window.meta.music.status = "stopped";
   if (audioSource != null) {
     try {
       audioSource.stop();
