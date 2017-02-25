@@ -10,4 +10,4 @@ window.setup.DOMContentLoaded()
   .then(window.setup.attachMusic)
   .then(window.interaction.attachButtons)
   .then(window.interaction.attachMotion)
-  .then((meta) => {console.log(meta);});
+  .then((meta) => {console.log("Done loading!");});

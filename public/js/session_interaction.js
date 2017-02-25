@@ -7,9 +7,9 @@ window.interaction = {
 
     let start, end;
     [start, end] = generatePrimaryButtonInteraction();
-    document.getElementById("you").addEventListener("mousedown", start);
+    // document.getElementById("you").addEventListener("mousedown", start);
     document.getElementById("you").addEventListener("touchstart", start);
-    document.getElementById("you").addEventListener("mouseup", end);
+    // document.getElementById("you").addEventListener("mouseup", end);
     document.getElementById("you").addEventListener("touchend", end);
 
     return meta;
@@ -33,6 +33,12 @@ function generatePrimaryButtonInteraction() {
   let roomId = window.meta.roomId;
 
   function attemptStart() {
+    // required to defeat mobile limitations
+    let oscillator = window.meta.audioCtx.createOscillator();
+    oscillator.connect(window.meta.audioCtx.destination);
+    oscillator.start(0);
+    oscillator.stop(window.meta.audioCtx.currentTime + 0.001);
+
     interactionTimer = window.setTimeout(() => {
       socket.emit("ready", {"room_id": roomId})
     }, 1000);
@@ -47,15 +53,38 @@ function generatePrimaryButtonInteraction() {
 }
 
 function trackMotion() {
+  let eliminateSelf = generateEliminateSelf();
   window.addEventListener("devicemotion", (event) => {
     let moment = event.acceleration.x * event.acceleration.x +
     event.acceleration.y + event.acceleration.y +
     event.acceleration.z + event.acceleration.z;
 
     if (moment > window.meta.threshold) {
-      console.log("Exceeded threshold");
+      eliminateSelf();
     }
   });
+}
+
+function generateEliminateSelf() {
+  let eliminateSent = false;
+  return function () {
+    if (window.utils.currentPlayerIsPlaying(window.currentGameState) && !eliminateSent) {
+      eliminateSent = true;
+      let room_id = window.meta.roomId;
+      let player_id = window.meta.playerId;
+
+      let eliminateSelfReq = new XMLHttpRequest();
+      eliminateSelfReq.open("GET", "/eliminate_player/" + room_id + "/" + window.utils.formatStrToUUID(player_id));
+      eliminateSelfReq.send();
+
+      eliminateSelfReq.onreadystatechange = () => {
+        if (eliminateSelfReq.readyState === XMLHttpRequest.DONE) {
+          eliminateSent = false;
+          console.log(eliminateSent.response);
+        }
+      }
+    }
+  }
 }
 
 function detectMotionSensitive() {

@@ -67,21 +67,22 @@ function updatePlayerList(data) {
 }
 
 function updateMusic(data) {
-  if (roomIsPlaying(data) &&
-    currentPlayerIsPlaying(data) &&
-    sessionIsSlow(data) &&
-    !sessionIsSlow(window.currentGameState)) {
+  if (window.utils.roomIsPlaying(data) &&
+    window.utils.currentPlayerIsPlaying(data) &&
+    window.utils.sessionIsSlow(data) &&
+    !window.utils.sessionIsSlow(window.currentGameState)) {
     stopMusic();
     playMusic("slow");
   }
-  else if (roomIsPlaying(data) &&
-    currentPlayerIsPlaying(data) &&
-    sessionIsFast(data) &&
-    !sessionIsFast(window.currentGameState)) {
+  else if (window.utils.roomIsPlaying(data) &&
+    window.utils.currentPlayerIsPlaying(data) &&
+    window.utils.sessionIsFast(data) &&
+    !window.utils.sessionIsFast(window.currentGameState)) {
     stopMusic();
     playMusic("fast");
   }
-  else if (!roomIsPlaying(data) || !currentPlayerIsPlaying(data)) {
+  else if (!window.utils.roomIsPlaying(data) ||
+    !window.utils.currentPlayerIsPlaying(data)) {
     stopMusic()
   }
   else {
@@ -95,38 +96,6 @@ function updateTracking(data) {
 }
 
 // ====
-
-function musicCurrentlyPlaying() {
-  return window.meta.audioSource != null;
-}
-
-function roomIsPlaying(data) {
-  return data !== null &&
-    data["room"] !== null &&
-    data["room"]["status_code"] === 1;
-}
-
-function currentPlayerIsPlaying(data) {
-  return data !== null &&
-    data["room"] !== null &&
-    data["room"]["players"] !== null &&
-    data["room"]["players"][window.meta.playerId] !== null &&
-    data["room"]["players"][window.meta.playerId]["status_code"] === 2;
-}
-
-function sessionIsSlow(data) {
-  return data !== null &&
-    data["room"] !== null &&
-    data["room"]["session"] !== null &&
-    data["room"]["session"]["status_readable"] === "slow";
-}
-
-function sessionIsFast(data) {
-  return data !== null &&
-    data["room"] !== null &&
-    data["room"]["session"] !== null &&
-    data["room"]["session"]["status_readable"] === "fast";
-}
 
 function playMusic(type) {
   let audioData = (type === "slow") ? window.meta.music.slow[0] : window.meta.music.fast[0];

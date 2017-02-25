@@ -25,6 +25,42 @@ window.utils = {
 
   leaveRoom: () => {
     document.location.href = "/";
+  },
+
+  roomIsPlaying: (data) => {
+    return data !== null &&
+      data["room"] !== null &&
+      data["room"]["status_code"] === 1;
+  },
+
+  currentPlayerIsPlaying: (data) => {
+    return data !== null &&
+      data["room"] !== null &&
+      data["room"]["players"] !== null &&
+      data["room"]["players"][window.meta.playerId] !== null &&
+      data["room"]["players"][window.meta.playerId]["status_code"] === 2;
+  },
+
+  sessionIsSlow: (data) => {
+    return data !== null &&
+      data["room"] !== null &&
+      data["room"]["session"] !== null &&
+      data["room"]["session"]["status_readable"] === "slow";
+  },
+
+  sessionIsFast: (data) => {
+    return data !== null &&
+      data["room"] !== null &&
+      data["room"]["session"] !== null &&
+      data["room"]["session"]["status_readable"] === "fast";
+  },
+
+  formatStrToUUID: (str) => {
+    return str.slice(0,8) + "-" +
+      str.slice(8,12) + "-" +
+      str.slice(12,16) + "-" +
+      str.slice(16,20) + "-" +
+      str.slice(20);
   }
 }
 
@@ -37,7 +73,13 @@ window.setup = {
   },
 
   attachMetaObject: () => {
-    window.meta = {threshold: 1000};
+
+    // misc setup
+    document.addEventListener('gesturestart', (e) => {
+        e.preventDefault();
+    });
+
+    window.meta = {threshold: 100};
     return window.meta;
   },
 
