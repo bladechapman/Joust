@@ -59,7 +59,7 @@ class Session(GameObject):
         the room and each player involved
         """
         num_eliminated = sum(map(lambda x: x.status == PlayerStatus.eliminated, self._room.players.values()))
-        if num_eliminated == len(self._room.players):
+        if num_eliminated == len(self._room.players) - 1:
             for player_id in self._room.players:
                 self._room.players[player_id].status = PlayerStatus.joined
             self._room.status = RoomStatus.complete
