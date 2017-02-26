@@ -21,6 +21,7 @@ class Room(GameObject):
         self._players = UUIDCollection()
         self._free_characters = set(list(Character))
         self.session = None
+        self.last_winner_id = None
 
     def add_new_player(self, uuid=uuid4()):
         """
@@ -68,7 +69,8 @@ class Room(GameObject):
             "players": self.players.serialize(),
             "status_code": self.status.value,
             "status_readable": self.status.name,
-            "session": None if self.session is None else self.session.serialize()
+            "session": None if self.session is None else self.session.serialize(),
+            "last_winner_id": None if self.last_winner_id is None else self.last_winner_id.hex
         }
 
     @property

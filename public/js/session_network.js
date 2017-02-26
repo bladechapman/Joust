@@ -29,7 +29,6 @@ function updateGameState(data) {
   console.log(data);
   updatePlayerList(data);
   updateMusic(data);
-  updateTracking(data);
   window.currentGameState = data;
 }
 
@@ -81,19 +80,28 @@ function updateMusic(data) {
     stopMusic();
     playMusic("fast");
   }
+  else if (!window.utils.roomIsPlaying(data) &&
+    window.utils.roomIsPlaying(window.currentGameState) &&
+    data["room"]["last_winner_id"] == window.meta.playerId) {
+    // winner
+    stopMusic();
+    console.log("WINNER!");
+  }
+  else if (window.utils.currentPlayerIsPlaying(window.currentGameState) &&
+    !window.utils.currentPlayerIsPlaying(data)) {
+      // just eliminated
+      stopMusic();
+      console.log("LOSER");
+    }
   else if (!window.utils.roomIsPlaying(data) ||
     !window.utils.currentPlayerIsPlaying(data)) {
-    stopMusic()
+    stopMusic();
   }
   else {
     console.log("music update passthrough");
     // console.log("UNCAUGHT MUSIC SITUATION...");
     // debugger;
   }
-}
-
-function updateTracking(data) {
-
 }
 
 // ====
