@@ -73,7 +73,6 @@ window.setup = {
   },
 
   attachMetaObject: () => {
-
     // misc setup
     document.addEventListener('gesturestart', (e) => {
         e.preventDefault();
@@ -128,6 +127,15 @@ window.setup = {
     };
     meta.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     meta.audioSource = null;
+
+    let whiteNoiseBufferSize = 0.3 * meta.audioCtx.sampleRate;
+    let whiteNoiseBuffer = meta.audioCtx.createBuffer(1, whiteNoiseBufferSize, meta.audioCtx.sampleRate)
+    let whiteNoiseOutput = whiteNoiseBuffer.getChannelData(0);
+    for (let i = 0; i < whiteNoiseBufferSize; i++) {
+      whiteNoiseOutput[i] = Math.random() * 2 - 1;
+    }
+    meta.music.white = whiteNoiseBuffer;
+
 
     return new Promise((resolve, reject) => {
       let incrementAsync = window.utils.async(2, () => {

@@ -45,11 +45,6 @@ def eliminate_player(room_id, player_id):
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
     return json.dumps({"error": None})
 
-@app.route("/test/<uuid:room_id>/<uuid:player_id>")
-def test(room_id, player_id):
-    print("TEST")
-    return "ABC"
-
 @socketio.on("join")
 def on_join(data):
     room_id = data["room_id"]

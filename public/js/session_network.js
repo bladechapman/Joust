@@ -86,8 +86,9 @@ function updateMusic(data) {
     stopMusic()
   }
   else {
-    console.log("UNCAUGHT MUSIC SITUATION...");
-    debugger;
+    console.log("music update passthrough");
+    // console.log("UNCAUGHT MUSIC SITUATION...");
+    // debugger;
   }
 }
 
@@ -101,13 +102,22 @@ function playMusic(type) {
   let audioData = (type === "slow") ? window.meta.music.slow[0] : window.meta.music.fast[0];
   let audioCtx = window.meta.audioCtx;
   window.meta.music.status = "loading";
+
+  let whiteNoise = window.meta.audioCtx.createBufferSource();
+  whiteNoise.buffer = window.meta.music.white;
+  whiteNoise.connect(window.meta.audioCtx.destination);
+  whiteNoise.loop = true;
+  whiteNoise.start();
+
   audioCtx.decodeAudioData(audioData, (buffer) => {
+    whiteNoise.stop();
     if (window.meta.music.status != "stopped") {
       let source = audioCtx.createBufferSource();
       source.buffer = buffer;
       source.connect(audioCtx.destination);
       window.meta.audioSource = source;
-      source.start(0, window.meta.averageTripTime / 1000);
+
+      source.start(0.3, window.meta.averageTripTime / 1000);
     }
   });
 }
