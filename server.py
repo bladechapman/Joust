@@ -75,7 +75,7 @@ def on_ready(data):
     player_id = UUID(request.sid)
     player = room.players[player_id]
     player.status = PlayerStatus.ready
-    if sum(map(lambda x: x.status == PlayerStatus.ready, room.players.values())) == len(room.players):
+    if len(room.players) != 1 and sum(map(lambda x: x.status == PlayerStatus.ready, room.players.values())) == len(room.players):
         session = Session(room)
     socketio.emit("game_update", build_game_update_payload(room), room=str(room_id))
 

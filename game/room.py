@@ -30,6 +30,8 @@ class Room(GameObject):
         """
         if len(self._players) == 4:
             raise IndexError("Room can only have a maximum of 4 players")
+        if self.session is not None:
+            raise Exception("Cannot join room while session is in progress")
         player = Player(self, id=uuid)
         self._players[player.id] = player
         self.select_character_for_player_id(player.id)
