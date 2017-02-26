@@ -105,7 +105,10 @@ function playMusic(type) {
 
   let whiteNoise = window.meta.audioCtx.createBufferSource();
   whiteNoise.buffer = window.meta.music.white;
-  whiteNoise.connect(window.meta.audioCtx.destination);
+  let gainNode = window.meta.audioCtx.createGain();
+  gainNode.gain.value = 0.3;
+  whiteNoise.connect(gainNode);
+  gainNode.connect(window.meta.audioCtx.destination);
   whiteNoise.loop = true;
   whiteNoise.start();
 
