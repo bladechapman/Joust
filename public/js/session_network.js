@@ -112,15 +112,20 @@ function playMusic(type) {
   whiteNoise.loop = true;
   whiteNoise.start();
 
+  let beforeDecode = (new Date).getTime();
   audioCtx.decodeAudioData(audioData, (buffer) => {
-    whiteNoise.stop();
     if (window.meta.music.status != "stopped") {
       let source = audioCtx.createBufferSource();
       source.buffer = buffer;
       source.connect(audioCtx.destination);
       window.meta.audioSource = source;
+      let decodeTime = (new Date).getTime() - beforeDecode;
 
-      source.start(0.3, window.meta.averageTripTime / 1000);
+      whiteNoise.stop();
+      source.start(0, (-window.meta.averageOffset + decodeTime) / 1000);
+    }
+    else {
+      whiteNoise.stop();
     }
   });
 }

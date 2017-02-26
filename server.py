@@ -88,9 +88,7 @@ def on_unready(data):
 
 @socketio.on("synchronize")
 def on_synchronize():
-    num_cycles = 10
-    for i in range(num_cycles):
-        emit("synchronize_ack", build_timestamp_payload())
+    emit("synchronize_ack", build_timestamp_payload())
 
 def leave_room(room_id, player_id):
     room = active_rooms[room_id]

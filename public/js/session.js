@@ -7,7 +7,7 @@ window.setup.DOMContentLoaded()
   .then(window.network.attachSocket)
   .then(window.network.attachNetworkHandlers)
   .then(window.setup.attachPlayerId)
-  .then(window.setup.attachAverageTripTime)
+  .then(window.setup.attachOffset)
   .then(window.interaction.attachButtons)
   .then(window.interaction.attachMotion)
   .then((meta) => {console.log("Done loading!");});
