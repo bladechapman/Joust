@@ -106,14 +106,14 @@ function updateMusic(data) {
     window.utils.sessionIsSlow(data) &&
     !window.utils.sessionIsSlow(window.currentGameState)) {
     stopMusic();
-    playMusic("slow");
+    playMusic("slow", data["room"]["session"]["playback_start_timestamp"]);
   }
   else if (window.utils.roomIsPlaying(data) &&
     window.utils.currentPlayerIsPlaying(data) &&
     window.utils.sessionIsFast(data) &&
     !window.utils.sessionIsFast(window.currentGameState)) {
     stopMusic();
-    playMusic("fast");
+    playMusic("fast", data["room"]["session"]["playback_start_timestamp"]);
   }
   else if (!window.utils.roomIsPlaying(data) &&
     window.utils.roomIsPlaying(window.currentGameState) &&
@@ -139,7 +139,7 @@ function updateMusic(data) {
 
 // ====
 
-function playMusic(type) {
+function playMusic(type, startTime) {
   let audioCtx = window.meta.audioCtx;
   window.meta.music.status = "loading";
 
@@ -160,7 +160,7 @@ function playMusic(type) {
 
   console.log(audioCtx.currentTime);
   whiteNoise.stop(audioCtx.currentTime + 0.3);
-  musicSource.start(audioCtx.currentTime + 0.3, (-window.meta.averageOffset / 1000) + 0.3);
+  musicSource.start(audioCtx.currentTime + 0.3, (-window.meta.averageOffset / 1000) + 0.3 + startTime);
 }
 
 function stopMusic() {

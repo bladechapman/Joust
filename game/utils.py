@@ -35,7 +35,7 @@ def delay_random(lower=1.0, upper=3.0):
     def wrap(f):
         @wraps(f)
         def delayed(*args, **kwargs):
-            delay = int(random() * upper + lower)
+            delay = int(random() * (upper - lower) + lower)
             timer = threading.Timer(delay, f, args=args, kwargs=kwargs)
             timer.start()
         return delayed
