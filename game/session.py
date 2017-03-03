@@ -23,26 +23,38 @@ class Session(GameObject):
         for player_id in self._room.players:
             self._room.players[player_id].status = PlayerStatus.playing
         self._room.session = self
-        self._status = SessionStatusEnum.slow
-        self.change_speed()
 
-    @delay_random(lower=15, upper=40)
-    def change_speed(self):
+        # start slow, change to fast, and on and on
+        self._status = SessionStatusEnum.slow
+        self.play_fast()
+
+    @delay_random(lower=45, upper=75)
+    def play_fast(self):
         """
-        Adjusts the speed of the session after some random amount of time
+        Adjust the speed of the session to be fast after some random amount of time
         """
         if (self._room is None):
             return
 
-        if self.status == SessionStatusEnum.slow:
-            self._status = SessionStatusEnum.fast
-        else:
-            self._status = SessionStatusEnum.slow
-
+        self._status = SessionStatusEnum.fast
         # TODO: Kill with fire, note that std threading libraries must be monkey patched with relevant networking library (eventlet)
         # https://github.com/miguelgrinberg/Flask-SocketIO/issues/192
         self._room.socket.emit("game_update", build_game_update_payload(self._room), room=str(self._room.id))
-        self.change_speed()
+        self.play_slow()
+
+    @delay_random(lower=10, upper=15)
+    def play_slow(self):
+        """
+        Adjust the speed of the session to be slow after some random amount of time
+        """
+        if (self._room is None):
+            return
+
+        self._status = SessionStatusEnum.slow
+        # TODO: Kill with fire, note that std threading libraries must be monkey patched with relevant networking library (eventlet)
+        # https://github.com/miguelgrinberg/Flask-SocketIO/issues/192
+        self._room.socket.emit("game_update", build_game_update_payload(self._room), room=str(self._room.id))
+        self.play_fast()
 
     def eliminate_player_by_id(self, uuid):
         """
