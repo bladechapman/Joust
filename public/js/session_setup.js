@@ -92,38 +92,6 @@ window.setup = {
     return meta;
   },
 
-  attachPlayerId: (meta) => {
-    meta.playerId = meta.socket.id;
-    return meta;
-  },
-
-  attachOffset: (meta) => {
-    let socket = meta.socket;
-    let offsets = [];
-    let t0 = window.utils.getTimestampMilliseconds();
-    socket.emit("synchronize");
-
-    return new Promise((resolve, reject) => {
-      let asyncIncrement = window.utils.async(10, () => {
-        socket.off("synchronize_ack");
-        console.log(offsets);
-        window.meta.averageOffset = offsets.reduce((a, b) => a + b, 0) / 10;
-        resolve(meta);
-      });
-
-      socket.on("synchronize_ack", (data) => {
-        let t1 = data["timestamp"];
-        let t2 = data["timestamp"];
-        let t3 = window.utils.getTimestampMilliseconds();
-        offsets.push(((t1 - t0) + (t2 - t3)) / 2);
-
-        t0 = window.utils.getTimestampMilliseconds();
-        asyncIncrement();
-        socket.emit("synchronize");
-      });
-    });
-  },
-
   attachMusic: (meta) => {
     let slowMusicRequest = new XMLHttpRequest();
     slowMusicRequest.open("GET", "/assets/test.mp3");
