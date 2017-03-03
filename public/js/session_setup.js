@@ -135,7 +135,7 @@ window.setup = {
     meta.audioSource = null;
 
     let whiteNoiseBufferSize = 0.3 * meta.audioCtx.sampleRate;
-    let whiteNoiseBuffer = meta.audioCtx.createBuffer(1, whiteNoiseBufferSize, meta.audioCtx.sampleRate)
+    let whiteNoiseBuffer = meta.audioCtx.createBuffer(1, whiteNoiseBufferSize, meta.audioCtx.sampleRate);
     let whiteNoiseOutput = whiteNoiseBuffer.getChannelData(0);
     for (let i = 0; i < whiteNoiseBufferSize; i++) {
       whiteNoiseOutput[i] = Math.random() * 2 - 1;
@@ -153,14 +153,18 @@ window.setup = {
 
       fastMusicRequest.onreadystatechange = () => {
         if (fastMusicRequest.readyState === XMLHttpRequest.DONE) {
-          incrementAsync();
-          meta.music.fast = [fastMusicRequest.response];
+          window.meta.audioCtx.decodeAudioData(fastMusicRequest.response, (buffer) => {
+            incrementAsync();
+            window.meta.music.fast.push(buffer);
+          });
         }
       }
       slowMusicRequest.onreadystatechange = () => {
         if (slowMusicRequest.readyState === XMLHttpRequest.DONE) {
-          incrementAsync();
-          meta.music.slow = [slowMusicRequest.response];
+          window.meta.audioCtx.decodeAudioData(slowMusicRequest.response, (buffer) => {
+            incrementAsync();
+            window.meta.music.slow.push(buffer);
+          });
         }
       }
     });

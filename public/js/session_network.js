@@ -49,7 +49,9 @@ function updatePlayerList(data) {
 
   // TODO: find a way to templatize this
   document.getElementById("you").className = characters[currentPlayer["character"]];
-  document.getElementById("you").innerHTML = "<img class=\"char_img_status\" src=../assets/"+currentPlayer["status_readable"]+".png>";
+  document.getElementById("you").innerHTML = "<img class=\"char_img_main\" src=../assets/"+characters[currentPlayer["character"]]+".png >";
+  document.getElementById("you").innerHTML += "<img class=\"char_img_status\" src=../assets/"+currentPlayer["status_readable"]+".png>";
+
 
   slots.forEach((elem) => {
     elem.innerHTML = "";
@@ -61,6 +63,7 @@ function updatePlayerList(data) {
       let slot = slots.pop();
       slot.className = "character " + characters[players[id]["character"]];
       slot.innerHTML = "<img class=\"char_img_status\" src=../assets/"+players[id]["status_readable"]+".png>"
+      slot.innerHTML += "<img class=\"char_img\" src=../assets/"+characters[players[id]["character"]]+".png>"
     }
   }
 }
@@ -89,25 +92,22 @@ function updateMusic(data) {
   }
   else if (window.utils.currentPlayerIsPlaying(window.currentGameState) &&
     !window.utils.currentPlayerIsPlaying(data)) {
-      // just eliminated
-      stopMusic();
-      console.log("LOSER");
-    }
+    // just eliminated
+    stopMusic();
+    console.log("LOSER");
+  }
   else if (!window.utils.roomIsPlaying(data) ||
     !window.utils.currentPlayerIsPlaying(data)) {
     stopMusic();
   }
   else {
     console.log("music update passthrough");
-    // console.log("UNCAUGHT MUSIC SITUATION...");
-    // debugger;
   }
 }
 
 // ====
 
 function playMusic(type) {
-  let audioData = (type === "slow") ? window.meta.music.slow[0] : window.meta.music.fast[0];
   let audioCtx = window.meta.audioCtx;
   window.meta.music.status = "loading";
 
@@ -120,22 +120,15 @@ function playMusic(type) {
   whiteNoise.loop = true;
   whiteNoise.start();
 
-  let beforeDecode = (new Date).getTime();
-  audioCtx.decodeAudioData(audioData, (buffer) => {
-    if (window.meta.music.status != "stopped") {
-      let source = audioCtx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(audioCtx.destination);
-      window.meta.audioSource = source;
-      let decodeTime = (new Date).getTime() - beforeDecode;
+  let musicSource = audioCtx.createBufferSource();
+  let musicData = (type === "slow") ? window.meta.music.slow[0] : window.meta.music.fast[0];
+  musicSource.buffer = musicData;
+  musicSource.connect(audioCtx.destination);
+  window.meta.audioSource = musicSource;
 
-      whiteNoise.stop();
-      source.start(0, (-window.meta.averageOffset + decodeTime) / 1000);
-    }
-    else {
-      whiteNoise.stop();
-    }
-  });
+  console.log(audioCtx.currentTime);
+  whiteNoise.stop(audioCtx.currentTime + 0.3);
+  musicSource.start(audioCtx.currentTime + 0.3, (-window.meta.averageOffset / 1000) + 0.3);
 }
 
 function stopMusic() {
