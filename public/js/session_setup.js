@@ -27,6 +27,11 @@ window.utils = {
     document.location.href = "/";
   },
 
+  removeLoadingScreen: () => {
+    let loadingElem = document.getElementById("loading");
+    loadingElem.parentNode.removeChild(loadingElem);
+  },
+
   roomIsPlaying: (data) => {
     return data !== null &&
       data["room"] !== null &&

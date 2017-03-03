@@ -7,9 +7,7 @@ window.interaction = {
 
     let start, end;
     [start, end] = generatePrimaryButtonInteraction();
-    // document.getElementById("you").addEventListener("mousedown", start);
     document.getElementById("you").addEventListener("touchstart", start);
-    // document.getElementById("you").addEventListener("mouseup", end);
     document.getElementById("you").addEventListener("touchend", end);
 
     return meta;
