@@ -83,7 +83,10 @@ window.setup = {
         e.preventDefault();
     });
 
-    window.meta = {threshold: 100};
+    window.meta = {
+      slowThreshold: 100,
+      fastThreshold: 300
+    };
     return window.meta;
   },
 

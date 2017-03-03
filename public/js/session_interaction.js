@@ -57,7 +57,8 @@ function trackMotion() {
     event.acceleration.y + event.acceleration.y +
     event.acceleration.z + event.acceleration.z;
 
-    if (moment > window.meta.threshold) {
+    if ((window.currentGameState["room"]["session"]["status_readable"] === "fast" && moment > window.meta.fastThreshold) ||
+      (window.currentGameState["room"]["session"]["status_readable"] === "slow" && moment > window.meta.slowThreshold)) {
       eliminateSelf();
     }
   });
