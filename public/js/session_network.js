@@ -120,12 +120,14 @@ function updateMusic(data) {
     data["room"]["last_winner_id"] == window.meta.playerId) {
     // winner
     stopMusic();
+    window.navigator.vibrate([50, 10, 50, 10, 50]);
     console.log("WINNER!");
   }
   else if (window.utils.currentPlayerIsPlaying(window.currentGameState) &&
     !window.utils.currentPlayerIsPlaying(data)) {
     // just eliminated
     stopMusic();
+    window.navigator.vibrate([100, 10, 100]);
     console.log("LOSER");
   }
   else if (!window.utils.roomIsPlaying(data) ||

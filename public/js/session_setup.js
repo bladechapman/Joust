@@ -118,7 +118,6 @@ window.setup = {
     }
     meta.music.white = whiteNoiseBuffer;
 
-
     return new Promise((resolve, reject) => {
       let incrementAsync = window.utils.async(2, () => {
         resolve(meta);

@@ -44,8 +44,6 @@ class Session(GameObject):
             self._status = SessionStatusEnum.slow
             cs = delay_random(lower=30, upper=60)(self.change_speed)
 
-
-
         self.playbackStartTimestamp = int(random() * 60)
         # TODO: Kill with fire, note that std threading libraries must be monkey patched with relevant networking library (eventlet)
         # https://github.com/miguelgrinberg/Flask-SocketIO/issues/192
