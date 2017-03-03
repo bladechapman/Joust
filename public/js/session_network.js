@@ -154,6 +154,7 @@ function playMusic(type, startTime) {
 
   let musicSource = audioCtx.createBufferSource();
   let musicData = (type === "slow") ? window.meta.music.slow[0] : window.meta.music.fast[0];
+  musicSource.playbackRate.value *= (type === "slow") ? 0.7 : 1.1;
   musicSource.buffer = musicData;
   musicSource.connect(audioCtx.destination);
   window.meta.audioSource = musicSource;
