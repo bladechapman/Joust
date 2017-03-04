@@ -64,7 +64,7 @@ class Session(GameObject):
         If all players have been eliminated, this will update the status of
         the room and each player involved
         """
-        num_eliminated = sum(map(lambda x: x.status == PlayerStatus.eliminated, self._room.players.values()))
+        num_eliminated = sum(map(lambda x: x.status != PlayerStatus.playing, self._room.players.values()))
         if num_eliminated == len(self._room.players) - 1:
             for player_id in self._room.players:
                 if self._room.players[player_id].status == PlayerStatus.playing:
