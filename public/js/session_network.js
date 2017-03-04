@@ -80,9 +80,9 @@ function updatePlayerList(data) {
   let characters = ["red", "blue", "yellow", "green"];
 
   // TODO: find a way to templatize this
-  document.getElementById("you").className = characters[currentPlayer["character"]];
-  document.getElementById("you").innerHTML = "<img class=\"char_img_main\" src=../assets/"+characters[currentPlayer["character"]]+".png >";
-  document.getElementById("you").innerHTML += "<img class=\"char_img_status\" src=../assets/"+currentPlayer["status_readable"]+".png>";
+  let status = currentPlayer["status_readable"];
+  document.getElementById("you").className = "center " + characters[currentPlayer["character"]] + " " + status;
+  document.getElementById("you").innerHTML = "<img class=\"char_img\" src=../assets/"+characters[currentPlayer["character"]]+".png >";
 
 
   slots.forEach((elem) => {
@@ -93,8 +93,8 @@ function updatePlayerList(data) {
   for (let id in players) {
     if (id != playerId) {
       let slot = slots.pop();
-      slot.className = "character " + characters[players[id]["character"]];
-      slot.innerHTML = "<img class=\"char_img_status\" src=../assets/"+players[id]["status_readable"]+".png>"
+      let status = players[id]["status_readable"];
+      slot.className = "character center " + characters[players[id]["character"]] + " " + status;
       slot.innerHTML += "<img class=\"char_img\" src=../assets/"+characters[players[id]["character"]]+".png>"
     }
   }

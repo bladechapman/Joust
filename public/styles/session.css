@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background-color: #8e8e8e;
 }
 
 img {
@@ -13,25 +14,21 @@ img {
   width: 100vw;
   height: 100vh;
   background: #f0f0f0;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
   z-index: 2;
 }
 
-#flex {
-  display: flex;
+#players {
   flex-direction: column;
+}
+
+.center {
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #other_players {
-  display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
   height: calc(50vh - 25px);
   width: 100%;
 }
@@ -41,6 +38,8 @@ img {
   height: calc(100% - 2px);
   border: 1px solid black;
   overflow: hidden;
+
+  opacity: 0.2;
 }
 
 .blue {
@@ -59,44 +58,13 @@ img {
   background: #B86060;
 }
 
-#one .char_img {
+.char_img {
   width:200px;
-  transform: translateX(-18%) translateY(-10%);
-  z-index: 3;
-  /*position: absolute;*/
-}
-
-#one .char_img_status {
-  /*transform: translateX(50%);*/
-}
-
-#two .char_img {
-  width:200px;
-  /*transform: translateX(-18%) translateY(45%);*/
-  z-index: 3;
-  /*position: absolute;*/
-}
-
-#two .char_img_status {
-  /*transform: translateX(50%) translateY(-377%);*/
-}
-
-#three .char_img {
-  width:200px;
-  /*transform: translateX(-18%) translateY(-8%);*/
-  z-index: 3;
-  /*position: absolute;*/
-}
-
-#three .char_img_status {
-  transform: translateX(50%);
 }
 
 #you {
   height: calc(50vh - 25px);
   width: calc(100%);
-  /*position: absolute;*/
-  /*border: 2px solid black;*/
 
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -108,23 +76,29 @@ img {
   */
   -ms-user-select: none;
   user-select: none;
+
+  opacity: 0.2;
+  /*animation-name: activate;
+  animation-duration: 1s;
+  animation-direction: reverse;*/
 }
 
-#you .char_img_main {
-  width: 200px;
-  /*transform: translateX(15%) translateY(-17%);*/
-  position: absolute;
+.character.ready {
+  animation-name: activate;
+  animation-duration: 1s;
+  opacity: 1;
 }
 
-#you .char_img_status {
-  /*width: 50px;*/
-  position: relative;
-  transform: translateY(100px) translateX(40px);
+.character.playing {
+  animation-name: activate;
+  animation-duration: 1s;
+  opacity: 1;
 }
 
 #you:active {
   animation-name: activate;
   animation-duration: 1s;
+  opacity: 1;
 }
 
 @keyframes activate {
@@ -135,6 +109,9 @@ img {
 #leave_room {
   height: calc(50px);
   width: calc(100%);
-  /*border: 2px solid black;*/
-  background-color: red;
+  border: 1px solid black;
+  background-color: #3a2c2c;
+  font-family: garamond;
+  font-size: 2em;
+  color: #989898;
 }
