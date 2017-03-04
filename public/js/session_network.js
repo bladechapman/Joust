@@ -37,7 +37,7 @@ window.network = {
     return new Promise((resolve, reject) => {
       let asyncIncrement = window.utils.async(10, () => {
         socket.off("synchronize_ack");
-        console.log(offsets);
+        // console.log(offsets);
         window.meta.averageOffset = offsets.reduce((a, b) => a + b, 0) / 10;
         resolve(meta);
       });
@@ -122,7 +122,6 @@ function updateMusic(data) {
     stopMusic();
     playEffect("win");
     window.navigator.vibrate([50, 10, 50, 10, 50]);
-    console.log("WINNER!");
   }
   else if (window.utils.currentPlayerIsPlaying(window.currentGameState) &&
     !window.utils.currentPlayerIsPlaying(data)) {
@@ -130,15 +129,14 @@ function updateMusic(data) {
     stopMusic();
     playEffect("lose");
     window.navigator.vibrate([100, 10, 100]);
-    console.log("LOSER");
   }
   else if (!window.utils.roomIsPlaying(data) ||
     !window.utils.currentPlayerIsPlaying(data)) {
     stopMusic();
   }
-  else {
-    console.log("music update passthrough");
-  }
+  // else {
+  //   console.log("music update passthrough");
+  // }
 }
 
 // ====
@@ -163,7 +161,6 @@ function playMusic(type, startTime) {
   musicSource.connect(audioCtx.destination);
   window.meta.audioSource = musicSource;
 
-  console.log(audioCtx.currentTime);
   whiteNoise.stop(audioCtx.currentTime + 0.3);
   musicSource.start(audioCtx.currentTime + 0.3, (-window.meta.averageOffset / 1000) + 0.3 + startTime);
 }

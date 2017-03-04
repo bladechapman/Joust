@@ -79,7 +79,7 @@ function generateEliminateSelf() {
       eliminateSelfReq.onreadystatechange = () => {
         if (eliminateSelfReq.readyState === XMLHttpRequest.DONE) {
           eliminateSent = false;
-          console.log(eliminateSent.response);
+          // console.log(eliminateSent.response);
         }
       }
     }
