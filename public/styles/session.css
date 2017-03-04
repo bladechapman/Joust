@@ -65,6 +65,7 @@ img {
 #you {
   height: calc(50vh - 25px);
   width: calc(100%);
+  overflow: hidden;
 
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
@@ -99,6 +100,11 @@ img {
   animation-name: activate;
   animation-duration: 1s;
   opacity: 1;
+}
+
+#you .char_img {
+  transform: rotateZ(-60deg);
+  width: 350px;
 }
 
 @keyframes activate {
