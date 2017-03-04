@@ -120,6 +120,7 @@ function updateMusic(data) {
     data["room"]["last_winner_id"] == window.meta.playerId) {
     // winner
     stopMusic();
+    playEffect("win");
     window.navigator.vibrate([50, 10, 50, 10, 50]);
     console.log("WINNER!");
   }
@@ -127,6 +128,7 @@ function updateMusic(data) {
     !window.utils.currentPlayerIsPlaying(data)) {
     // just eliminated
     stopMusic();
+    playEffect("lose");
     window.navigator.vibrate([100, 10, 100]);
     console.log("LOSER");
   }
@@ -164,6 +166,18 @@ function playMusic(type, startTime) {
   console.log(audioCtx.currentTime);
   whiteNoise.stop(audioCtx.currentTime + 0.3);
   musicSource.start(audioCtx.currentTime + 0.3, (-window.meta.averageOffset / 1000) + 0.3 + startTime);
+}
+
+function playEffect(name) {
+  let audioCtx = window.meta.audioCtx;
+
+  let effectSource = audioCtx.createBufferSource();
+  let effectData = (name === "win") ? window.meta.music.effects["win"] : window.meta.music.effects["lose"];
+  effectSource.buffer = effectData;
+  effectSource.connect(audioCtx.destination);
+  effectSource.loop = false;
+
+  effectSource.start(audioCtx.currentTime);
 }
 
 function stopMusic() {

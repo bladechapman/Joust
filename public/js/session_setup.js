@@ -95,6 +95,7 @@ window.setup = {
     return meta;
   },
 
+  // try to make this smaller...
   attachMusic: (meta) => {
     let slowMusicRequest = new XMLHttpRequest();
     slowMusicRequest.open("GET", "/assets/test.mp3");
@@ -139,6 +140,45 @@ window.setup = {
           window.meta.audioCtx.decodeAudioData(slowMusicRequest.response, (buffer) => {
             incrementAsync();
             window.meta.music.slow.push(buffer);
+          });
+        }
+      }
+    });
+  },
+
+  attachSoundEffects: (meta) => {
+    let winEffectRequest = new XMLHttpRequest();
+    winEffectRequest.open("GET", "/assets/win.mp3");
+    winEffectRequest.responseType = "arraybuffer";
+
+    let loseEffectRequest = new XMLHttpRequest();
+    loseEffectRequest.open("GET", "/assets/lose.mp3");
+    loseEffectRequest.responseType = "arraybuffer";
+
+    return new Promise((resolve, reject) => {
+      let incrementAsync = window.utils.async(2, () => {
+        resolve(meta);
+      });
+
+      winEffectRequest.send();
+      loseEffectRequest.send();
+
+      window.meta.music.effects = {}
+
+      winEffectRequest.onreadystatechange = () => {
+        if (winEffectRequest.readyState == XMLHttpRequest.DONE) {
+          window.meta.audioCtx.decodeAudioData(winEffectRequest.response, (buffer) => {
+            window.meta.music.effects["win"] = buffer;
+            incrementAsync();
+          });
+        }
+      }
+
+      loseEffectRequest.onreadystatechange = () => {
+        if (loseEffectRequest.readyState == XMLHttpRequest.DONE) {
+          window.meta.audioCtx.decodeAudioData(loseEffectRequest.response, (buffer) => {
+            window.meta.music.effects["lose"] = buffer;
+            incrementAsync();
           });
         }
       }
