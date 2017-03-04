@@ -37,9 +37,11 @@ function generatePrimaryButtonInteraction() {
     oscillator.start(0);
     oscillator.stop(window.meta.audioCtx.currentTime + 0.001);
 
-    interactionTimer = window.setTimeout(() => {
-      socket.emit("ready", {"room_id": roomId})
-    }, 1000);
+    if (!window.utils.roomIsPlaying(window.currentGameState)) {
+      interactionTimer = window.setTimeout(() => {
+        socket.emit("ready", {"room_id": roomId})
+      }, 1000);
+    }
   }
 
   function attemptEnd() {
