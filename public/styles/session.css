@@ -3,6 +3,8 @@ body {
   padding: 0;
   overflow: hidden;
   background-color: #8e8e8e;
+  font-family: garamond;
+  font-size: 2em;
 }
 
 img {
@@ -15,6 +17,11 @@ img {
   height: 100vh;
   background: #f0f0f0;
   z-index: 2;
+  flex-direction: column;
+}
+
+#loading_status {
+  font-size: 0.5em;
 }
 
 #players {
@@ -117,7 +124,5 @@ img {
   width: calc(100%);
   border: 1px solid black;
   background-color: #3a2c2c;
-  font-family: garamond;
-  font-size: 2em;
   color: #989898;
 }

@@ -66,6 +66,10 @@ window.utils = {
       str.slice(12,16) + "-" +
       str.slice(16,20) + "-" +
       str.slice(20);
+  },
+
+  changeLoadingStatus: (newStatus) => {
+    document.getElementById("loading_status").innerHTML = newStatus;
   }
 }
 
