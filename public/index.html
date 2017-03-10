@@ -7,11 +7,20 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no">
   </head>
   <body>
-    <div id="flex">
-      <img id="header_image" src="/assets/fu.png" />
-      <a href="/new_room" id="new" class="button"></a>
-      <a href="javascript:joinRoom()" id="join" class="button"></a>
-      <textarea id="room_id"></textarea>
-    </div>
+
+      <div id="menu" class="flex">
+        <div id="header">Joust</div>
+        <a href="/new_room" id="new" class="button">Create Room</a>
+        <a href="javascript:joinRoom()" id="join" class="button">Join Room</a>
+        <textarea id="room_id"></textarea>
+      </div>
+
+      <div id="art" class="flex">
+        <div class="character one flex"><img src="/assets/red.png"></div>
+        <div class="character two flex"><img src="/assets/yellow.png"></div>
+        <div class="character three flex"><img src="/assets/blue.png"></div>
+        <div class="character four flex"><img src="/assets/green.png"></div>
+      </div>
+
   </body>
 </html>

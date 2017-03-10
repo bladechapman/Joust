@@ -1,46 +1,103 @@
-#header_image {
-  margin: 50px 0 30px 0;
-  width: 250px;
+@font-face {
+  font-family: "Monogram";
+  src: url("/assets/monogram.ttf");
 }
 
-#flex {
+#header {
+  font-size: 4em;
+  width: 250px;
+  font-family: "Monogram";
+  color: white;
+}
+
+#menu {
+  height: 50vh;
+}
+
+.flex {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
+#art {
+  flex-direction: row;
+  width: 100vw;
+  height: 50vh;
+  background-color: blue;
+}
+
+#room_id {
+  resize: none;
+  font-size: 1em;
+  font-family: garamond;
+  bottom: 30px;
+}
+
+.character {
+  position: relative;
+  width: calc(25% - 1px);
+  height: calc(100% - 1px);
+  border: 1px solid black;
+  border-right: 0px;
+  border-bottom: 0px;
+  overflow: hidden;
+
+}
+.character.one {
+  border-left: 0px;
+  width: 25%;
+}
+
+.character img {
+  width: 300px;
+
+}
+
+.one {
+  background-color: #B86060;
+}
+
+.two {
+  background-color: #F3C451;
+}
+
+.three {
+  background-color: #ADB8EF;
+}
+
+.four {
+  background-color: #609F5F;
+}
+
 .button {
   width: 140px;
   height: 35px;
-  background-color: #272323;
-  background-repeat: no-repeat;
-  background-position: center;
+  color: white;
   margin: 10px;
   cursor: pointer;
+  text-decoration: none;
+  line-height: 35px;
+  text-align: center;
+  font-size: 1.5em;
+  border-radius: 3px;
+  border: 2px solid white;
 }
 
 #new {
   background-size: 120px 15px;
-  background-image: url("../assets/create_room.png");
 }
 
 #join {
   background-size: 95px 15px;
-  background-image: url("../assets/join_room.png");
 }
 
 body {
   height: 100vh;
   margin: 0;
   padding: 0;
-
-  background: rgba(255,213,105,1);
-  background: -moz-linear-gradient(top, rgba(255,213,105,1) 0%, rgba(209,67,67,1) 100%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,213,105,1)), color-stop(100%, rgba(209,67,67,1)));
-  background: -webkit-linear-gradient(top, rgba(255,213,105,1) 0%, rgba(209,67,67,1) 100%);
-  background: -o-linear-gradient(top, rgba(255,213,105,1) 0%, rgba(209,67,67,1) 100%);
-  background: -ms-linear-gradient(top, rgba(255,213,105,1) 0%, rgba(209,67,67,1) 100%);
-  background: linear-gradient(to bottom, rgba(255,213,105,1) 0%, rgba(209,67,67,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd569', endColorstr='#d14343', GradientType=0 );
+  font-family: garamond;
+  background-color: #3A2C2C;
 }
