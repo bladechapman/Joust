@@ -4,7 +4,7 @@ from game.player import Player
 from game.character import Character
 from enum import Enum
 from uuid import uuid4
-from game.utils import UUIDCollection
+from game.utils import UUIDCollection, generate_four_letter_code
 
 class RoomStatus(Enum):
     waiting = 0
@@ -12,11 +12,13 @@ class RoomStatus(Enum):
     complete = 2
 
 class Room(GameObject):
-    def __init__(self):
+    def __init__(self, id=None):
         """
         Initializes a new room object
         """
-        super().__init__(id=uuid4())
+        if id is None:
+            id = generate_four_letter_code()
+        super().__init__(id=id)
         self._status = RoomStatus.waiting
         self._players = UUIDCollection()
         self._free_characters = set(list(Character))
@@ -65,7 +67,7 @@ class Room(GameObject):
 
     def serialize(self):
         return {
-            "id": self.id.hex,
+            "id": self.id,
             "players": self.players.serialize(),
             "status_code": self.status.value,
             "status_readable": self.status.name,

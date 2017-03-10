@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 class GameObject():
-    def __init__(self, id=uuid4()):
+    def __init__(self, id):
         """
         Initializes a new game object with an id
         """

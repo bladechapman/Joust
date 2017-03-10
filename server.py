@@ -5,7 +5,7 @@ from flask_socketio import SocketIO, join_room, leave_room, emit
 from game.room import Room
 from game.player import Player, PlayerStatus
 from game.session import Session
-from game.utils import build_game_update_payload, build_timestamp_payload
+from game.utils import build_game_update_payload, build_timestamp_payload, generate_four_letter_code
 from uuid import UUID
 import json
 
@@ -22,22 +22,25 @@ def root():
 
 @app.route("/new_room")
 def create_new_room():
-    new_room = Room()
+    new_room_id = generate_four_letter_code()
+    while new_room_id in active_rooms:
+        new_room_id = generate_four_letter_code()
+    new_room = Room(new_room_id)
     new_room.socket = socketio  # TODO: Kill with fire
     active_rooms[new_room.id] = new_room
     return redirect("/game/{}".format(str(new_room.id), code=302))
 
-@app.route("/join_room/<uuid:room_id>")
+@app.route("/join_room/<string:room_id>")
 def join_existing_room(room_id):
     return redirect("/game/{}".format(str(room_id), code=302))
 
-@app.route("/game/<uuid:room_id>")
+@app.route("/game/<string:room_id>")
 def serve_room(room_id):
     if room_id not in active_rooms:
         raise Exception("Room does not exist")
     return send_from_directory("public", "session.html")
 
-@app.route("/eliminate_player/<uuid:room_id>/<uuid:player_id>")
+@app.route("/eliminate_player/<string:room_id>/<uuid:player_id>")
 def eliminate_player(room_id, player_id):
     room = active_rooms[room_id]
     session = room.session
@@ -48,9 +51,9 @@ def eliminate_player(room_id, player_id):
 @socketio.on("join")
 def on_join(data):
     room_id = data["room_id"]
-    if UUID(room_id) not in active_rooms:
+    if room_id not in active_rooms:
         raise Exception("Room does not exist")
-    room = active_rooms[UUID(room_id)]
+    room = active_rooms[room_id]
     new_player = room.add_new_player(UUID(request.sid))
     active_players[UUID(request.sid)] = new_player
     join_room(room_id)
@@ -66,7 +69,7 @@ def on_disconnect():
 @socketio.on("ready")
 def on_ready(data):
     room_id = data['room_id']
-    room = active_rooms[UUID(room_id)]
+    room = active_rooms[room_id]
     player_id = UUID(request.sid)
     player = room.players[player_id]
     player.status = PlayerStatus.ready
@@ -77,7 +80,7 @@ def on_ready(data):
 @socketio.on("unready")
 def on_unready(data):
     room_id = data['room_id']
-    room = active_rooms[UUID(room_id)]
+    room = active_rooms[room_id]
     player_id = UUID(request.sid)
     player = room.players[player_id]
     if room.session is not None:

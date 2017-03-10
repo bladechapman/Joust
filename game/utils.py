@@ -12,6 +12,12 @@ def build_game_update_payload(room):
         "timestamp": get_timestamp_milliseconds()
     }
 
+def generate_four_letter_code():
+    """
+    Generate a random four letter code for use in room id
+    """
+    return "".join([chr(int(random() * 26 + 65)) for i in range(4)])
+
 def build_timestamp_payload():
     """
     For use in ntp syncing

@@ -4,6 +4,7 @@ from game.game_object import GameObject
 from game.utils import delay_random, build_game_update_payload
 from enum import Enum
 from random import random
+from uuid import uuid4
 import gc
 
 class SessionStatusEnum(Enum):
@@ -16,7 +17,7 @@ class Session(GameObject):
         Initializes a new session object with the given room
         :param room: Room object the session belongs to
         """
-        super().__init__()
+        super().__init__(id=uuid4())
         self._room = room
         if self._room.status == RoomStatus.playing:
             raise Exception("Session already in progress")
