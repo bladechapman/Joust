@@ -102,7 +102,7 @@ window.setup = {
   // try to make this smaller...
   attachMusic: (meta) => {
     let slowMusicRequest = new XMLHttpRequest();
-    slowMusicRequest.open("GET", "/assets/test.mp3");
+    slowMusicRequest.open("GET", "/assets/slow.mp3");
     slowMusicRequest.responseType = "arraybuffer";
     let fastMusicRequest = new XMLHttpRequest();
     fastMusicRequest.open("GET", "/assets/fast.mp3");

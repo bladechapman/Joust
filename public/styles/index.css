@@ -31,9 +31,17 @@
 
 #room_id {
   resize: none;
-  font-size: 1em;
   font-family: garamond;
   bottom: 30px;
+
+  height: 35px;
+  width: 140px;
+  border-radius: 3px;
+  font-size: 30px;
+  text-align: center;
+  color: #3A2C2C;
+  text-transform: uppercase;
+  letter-spacing: 5px;
 }
 
 .character {
@@ -44,8 +52,8 @@
   border-right: 0px;
   border-bottom: 0px;
   overflow: hidden;
-
 }
+
 .character.one {
   border-left: 0px;
   width: 25%;
@@ -53,7 +61,7 @@
 
 .character img {
   width: 300px;
-
+  transform: rotateZ(-32deg);
 }
 
 .one {
@@ -84,6 +92,11 @@
   font-size: 1.5em;
   border-radius: 3px;
   border: 2px solid white;
+}
+
+.button:active {
+  color: #3A2C2C;
+  background-color: white;
 }
 
 #new {
