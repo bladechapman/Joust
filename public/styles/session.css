@@ -23,6 +23,16 @@ img {
   font-size: 0.5em;
 }
 
+#banner {
+  height: 50px;
+  background-color: #3a2c2c;
+  color: #d4d4d4;
+  width: 100%;
+  line-height: 50px;
+  text-align: center;
+  letter-spacing: 5px;
+}
+
 #players {
   flex-direction: column;
 }
@@ -36,7 +46,7 @@ img {
 
 #other_players {
   flex-direction: row;
-  height: calc(50vh - 25px);
+  height: calc(50vh - 25px - 50px);
   width: 100%;
 }
 

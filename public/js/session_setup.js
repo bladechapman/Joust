@@ -96,6 +96,7 @@ window.setup = {
 
   attachRoomId: (meta) => {
     meta.roomId = window.utils.extractRoomId();
+    document.getElementById("banner").innerHTML = meta.roomId;
     return meta;
   },
 
