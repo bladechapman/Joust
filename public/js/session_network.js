@@ -84,7 +84,7 @@ function updatePlayerList(data) {
   document.getElementById("you").className = "center " + characters[currentPlayer["character"]] + " " + status;
   document.getElementById("you").innerHTML = "<img class=\"char_img\" src=../assets/"+characters[currentPlayer["character"]]+".png >";
   if (data["room"]["last_winner_id"] !== null && data["room"]["last_winner_id"] == window.meta.playerId) {
-    document.getElementById("you").innerHTML += "<div class=\"ornament\">ORNAMENT</div>";
+    document.getElementById("you").innerHTML += "<img class=\"ornament\" src=../assets/win.png></img>";
   }
 
   slots.forEach((elem) => {
@@ -99,7 +99,7 @@ function updatePlayerList(data) {
       slot.className = "character center " + characters[players[id]["character"]] + " " + status;
       slot.innerHTML += "<img class=\"char_img\" src=../assets/"+characters[players[id]["character"]]+".png>"
       if (data["room"]["last_winner_id"] !== null && data["room"]["last_winner_id"] == id) {
-        slot.innerHTML += "<div class=\"ornament\">ORNAMENT</div>";
+        slot.innerHTML += "<img class=\"ornament\" src=../assets/win.png></img>";
       }
     }
   }
