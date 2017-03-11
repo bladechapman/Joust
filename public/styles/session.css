@@ -126,7 +126,7 @@ img {
 
 .character.ready {
   animation-name: activate;
-  animation-duration: 1s;
+  animation-duration: 0.2s;
   opacity: 1;
 }
 
