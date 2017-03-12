@@ -2,7 +2,7 @@
   <img src="http://i.imgur.com/ISbTJOM.png"/>
 </p>
 <h1 align="center">Joust</h1>
-<p align="center">A Mobile Web Interpretation of [Johann Sebastian Joust](http://jsjoust.com/)</p>
+<p align="center">A Mobile Web Interpretation of <a href=http://jsjoust.com/>Johann Sebastian Joust</a></p>
 
 ## What is Joust?
 Joust is a mobile web game designed to designed to get you and your friends moving! The goal is
