@@ -8,12 +8,12 @@
 Joust is a mobile web game designed to designed to get you and your friends moving! The goal is
 to be the last player standing. When the music is slow, your controller (phone) is very
 sensitive to movement. Try to jostle your opponents' controllers to eliminate them, but be careful!
-If you move too quickly yourself, you're out of the game!. When the music speeds up, you're allowed
+If you move too quickly yourself, you're out of the game! When the music speeds up, you're allowed
 a small window to dash towards your opponents to eliminate them.
 
 ## How Do I Play?
-1. Navigate to the address where your game server is being hosted from your mobile device.
-2. Un-mute your phone and crank up the volume!
+1. With your mobile device, navigate to the address where your game server is being hosted.
+2. Un-mute your device and crank up the volume!
 3. Press "Create Room", or type a room code and press "Join Room"
 4. To ready up, press and hold the large square containing your character. Keep holding while the game has started or else you'll be eliminated!
 5. Once everybody is ready, play Joust!
@@ -43,4 +43,4 @@ for more compatibility details.
 ## To do
 - Make server more scalable by adopting WSGI-nginx architecture
 - Clean up the client code so functions are less exposed
-- Integrate front-end build process, and accommodate robust ES6, LESS, and minification.
+- Integrate front-end build process, and accommodate ES6, LESS, and minification.
