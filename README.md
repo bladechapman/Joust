@@ -7,7 +7,7 @@
 [Sure thing!](http://joust.bladeismyna.me)
 
 ## What is Joust?
-Joust is a mobile web game designed to designed to get you and your friends moving! The goal is
+Joust is a mobile web game designed to get you and your friends moving! The goal is
 to be the last player standing. When the music is slow, your controller (phone) is very
 sensitive to movement. Try to jostle your opponents' controllers to eliminate them, but be careful!
 If you move too quickly yourself, you're out of the game! When the music speeds up, you're allowed
