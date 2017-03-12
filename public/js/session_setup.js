@@ -88,7 +88,7 @@ window.setup = {
     });
 
     window.meta = {
-      slowThreshold: 100,
+      slowThreshold: 50,
       fastThreshold: 300
     };
     return window.meta;

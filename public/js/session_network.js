@@ -126,14 +126,14 @@ function updateMusic(data) {
     // winner
     stopMusic();
     playEffect("win");
-    window.navigator.vibrate([50, 10, 50, 10, 50]);
+    // window.navigator.vibrate([50, 10, 50, 10, 50]);
   }
   else if (window.utils.currentPlayerIsPlaying(window.currentGameState) &&
     !window.utils.currentPlayerIsPlaying(data)) {
     // just eliminated
     stopMusic();
     playEffect("lose");
-    window.navigator.vibrate([100, 10, 100]);
+    // window.navigator.vibrate([100, 10, 100]);
   }
   else if (!window.utils.roomIsPlaying(data) ||
     !window.utils.currentPlayerIsPlaying(data)) {
