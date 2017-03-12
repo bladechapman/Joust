@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="http://i.imgur.com/ISbTJOM.png"/>
+  <img src="http://i.imgur.com/lYj1q2X.png"/>
 </p>
-<h1 align="center">Joust</h1>
 <p align="center">A Mobile Web Interpretation of <a href=http://jsjoust.com/>Johann Sebastian Joust</a></p>
+
+## I Just Wanna Play!
+[Sure thing!](joust.bladeismyna.me)
 
 ## What is Joust?
 Joust is a mobile web game designed to designed to get you and your friends moving! The goal is
