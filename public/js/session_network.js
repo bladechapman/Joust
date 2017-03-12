@@ -37,7 +37,6 @@ window.network = {
     return new Promise((resolve, reject) => {
       let asyncIncrement = window.utils.async(10, () => {
         socket.off("synchronize_ack");
-        // console.log(offsets);
         window.meta.averageOffset = offsets.reduce((a, b) => a + b, 0) / 10;
         resolve(meta);
       });
@@ -58,7 +57,7 @@ window.network = {
 
 
 function updateGameState(data) {
-  console.log(data);
+  // console.log(data);
   updatePlayerList(data);
   updateMusic(data);
   window.currentGameState = data;
@@ -126,22 +125,17 @@ function updateMusic(data) {
     // winner
     stopMusic();
     playEffect("win");
-    // window.navigator.vibrate([50, 10, 50, 10, 50]);
   }
   else if (window.utils.currentPlayerIsPlaying(window.currentGameState) &&
     !window.utils.currentPlayerIsPlaying(data)) {
     // just eliminated
     stopMusic();
     playEffect("lose");
-    // window.navigator.vibrate([100, 10, 100]);
   }
   else if (!window.utils.roomIsPlaying(data) ||
     !window.utils.currentPlayerIsPlaying(data)) {
     stopMusic();
   }
-  // else {
-  //   console.log("music update passthrough");
-  // }
 }
 
 // ====
